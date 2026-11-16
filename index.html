@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rutepapir med mattehjelper</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f2a1f; --kb:#14382a; --key:#1d4a37; --key-b:#2f6b52; --key-h:#26604a; --ink:#e8f5ee; --muted:#9cc5b0;
+  --accent:#3fae7a; --accent-t:#06180f; --danger:#4a2a24; --danger-t:#ffb4aa;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f2a1f; --kb:#14382a; --key:#1d4a37; --key-b:#2f6b52; --key-h:#26604a; --ink:#e8f5ee; --muted:#9cc5b0;
+    --accent:#3fae7a; --accent-t:#06180f; --danger:#4a2a24; --danger-t:#ffb4aa;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f2a1f; --kb:#14382a; --key:#1d4a37; --key-b:#2f6b52; --key-h:#26604a; --ink:#e8f5ee; --muted:#9cc5b0;
+  --accent:#3fae7a; --accent-t:#06180f; --danger:#4a2a24; --danger-t:#ffb4aa;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'Patrick Hand',system-ui,sans-serif}
+.paperwrap{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;justify-content:center;align-items:flex-start}
+#paper{background:#fff;box-shadow:0 1px 8px rgba(20,40,60,.25);border:1px solid var(--pborder,#8fb9a3);display:grid;flex:none}
+.c{width:34px;height:34px;border-right:1px solid var(--grid,#cfe5d8);border-bottom:1px solid var(--grid,#cfe5d8);display:flex;align-items:center;justify-content:center;font-size:25px;line-height:1;color:#10202e;cursor:text;user-select:none;position:relative}
+.c.cur{background:var(--curbg,#d8f0e2);outline:2px solid var(--curline,#1f7a4d);outline-offset:-2px;z-index:1}
+.c .s{font-size:16px;position:absolute;top:2px;left:50%}
+.c.hasS{justify-content:flex-start;padding-left:6px}
+.c.hasE{justify-content:flex-start;padding-left:5px}
+.c .e{font-size:14px;position:absolute;top:3px;right:3px}
+.c.u{border-bottom:2px solid #10202e}
+.kb{position:relative;background:var(--kb);border-top:2px solid var(--key-b);padding:8px 10px 10px;display:flex;flex-direction:column;gap:7px;align-items:center}
+.row{display:flex;gap:6px;width:100%;max-width:560px}
+.row.tabs{justify-content:space-between}
+.tab{flex:1}
+button{font:inherit;color:var(--ink);background:var(--key);border:1.5px solid var(--key-b);border-radius:0;cursor:pointer;min-height:var(--kh,42px);padding:0 6px;font-size:clamp(16px,calc(var(--kh,42px)*.52),34px)}
+button:hover{background:var(--key-h)}
+button:active{transform:scale(.95)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tab{font-size:16px;min-height:34px}
+.tab[aria-pressed="true"],.toggle[aria-pressed="true"]{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.keys{display:grid;gap:6px;width:100%;max-width:560px}
+.keys button.dim{color:var(--muted)}
+.row button{flex:1}
+.row .wide{flex:3}
+.row .ctl{font-size:20px}
+.row .nm{font-size:16px}
+.keys .lbl{font-size:13px;line-height:1.1;padding:0 2px}
+.keys.scroll{max-height:38vh;overflow-y:auto}
+.kh{grid-column:1/-1;font-size:15px;color:var(--muted);padding-top:4px}
+.keys .nmk{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:2px 4px}
+.nmk span{font-size:clamp(18px,calc(var(--kh,42px)*.5),30px);line-height:1.05}
+.nmk small{font-size:12px;color:var(--muted);line-height:1.05}
+.c.hasF{flex-direction:column;padding:0 3px}
+.c .fn,.c .fd{width:100%;text-align:center;font-size:14px;line-height:1.05}
+.c .fn{border-bottom:2px solid #10202e}
+.rside{display:flex;flex-direction:column;gap:8px;padding:8px 6px;flex:none;align-self:flex-start;max-height:100%;overflow-y:auto}
+.rside button{writing-mode:vertical-rl;min-height:0;width:34px;padding:12px 0;font-size:16px;font-weight:700}
+.rside button[aria-pressed="true"],.side .tg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.side{position:absolute;right:48px;top:8px;width:236px;max-height:calc(100% - 16px);overflow:auto;background:var(--kb);border:2px solid var(--key-b);padding:10px;display:flex;flex-direction:column;gap:8px;z-index:6;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.side[hidden]{display:none}
+.side button{min-height:40px;font-size:20px;padding:0}
+.side .chead button{min-height:30px;width:36px;font-size:16px}
+.side .tg{display:flex;gap:6px}
+.side .tg button{flex:1;min-height:34px;font-size:16px}
+.side .sw{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.side .sw button{height:38px;min-height:0;border:2px solid transparent}
+.side .sw button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--kb)}
+.side .fprev{display:flex;flex-direction:column;gap:4px}
+.side .fbox{min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;line-height:1.1;padding:2px}
+.side .fbox small{font-size:12px;color:var(--muted)}
+.side .fbox b{font-weight:400}
+.side .fbox[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.fbar{height:3px;background:var(--ink)}
+.fkeys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fkeys .ins{grid-column:1/-1;background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-size:18px}
+.fl{font-size:14px;color:var(--muted)}
+.side .fq{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.side .fq button{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.fq .qn{border-bottom:2px solid currentColor;padding:0 5px 1px}
+.fq .qd{padding-top:2px}
+.grip{width:100%;max-width:560px;height:16px;cursor:ns-resize;display:flex;align-items:center;justify-content:center;touch-action:none}
+.grip span{width:64px;height:5px;background:var(--key-b)}
+.grip:hover span{background:var(--accent)}
+.mid{flex:1;min-height:0;display:flex;position:relative}
+.mid>.paperwrap{min-width:0}
+.calc{position:absolute;right:10px;bottom:100%;width:240px;max-width:calc(100% - 20px);background:var(--kb);border:2px solid var(--key-b);border-bottom:0;padding:10px;display:flex;flex-direction:column;gap:8px;z-index:6;box-shadow:0 -4px 14px rgba(0,0,0,.35);transform-origin:bottom center;animation:fold .18s ease-out}
+@keyframes fold{from{transform:scaleY(.1);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.calc{animation:none}}
+.chead{display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.calc .chead button{min-height:30px;width:36px;font-size:16px}
+.calc[hidden]{display:none}
+.cexpr{min-height:24px;text-align:right;color:var(--muted);font-size:18px;word-break:break-all}
+.cres{text-align:right;font-size:32px;min-height:40px;overflow-x:auto;white-space:nowrap;border-bottom:2px solid var(--key-b)}
+.ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.calc button{min-height:40px;font-size:20px;padding:0}
+.calc button.eq{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.calc button.ins{grid-column:span 2;font-size:16px}
+.calctab{writing-mode:vertical-rl;align-self:center;min-height:0;max-height:100%;width:46px;padding:12px 0;font-size:21px;font-weight:700;letter-spacing:.04em;background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.calctab:hover{background:var(--accent);filter:brightness(1.12)}
+
+#wipe[data-sure="1"]{background:var(--danger);color:var(--danger-t);border-color:var(--danger-t)}
+
+#mh{--m-bg:var(--kb);--m-card:var(--key);--m-ink:var(--ink);--m-mut:var(--muted);--m-ac:var(--accent);--m-act:var(--accent-t);--m-bd:var(--key-b);--m-c2:#f2735a;--mfs:1;flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg);font-family:'Patrick Hand',system-ui,sans-serif;font-size:calc(20px*var(--mfs));line-height:1.3;color:var(--m-ink)}
+#mh[hidden]{display:none}
+#mh *{box-sizing:border-box;border-radius:0!important}
+#mh button{font:inherit;color:var(--m-ink);background:var(--m-card);border:2px solid var(--m-bd);border-radius:12px;min-height:50px;padding:0 14px;cursor:pointer}
+#mh button[aria-pressed="true"],#mh .pri{background:var(--m-ac);color:var(--m-act);border-color:var(--m-ac)}
+#mh summary{cursor:pointer;min-height:52px;display:flex;align-items:center;padding:0 12px;font-weight:600;font-size:1.1em;list-style:none}
+#mh summary::-webkit-details-marker{display:none}
+#mh summary::after{content:'▾';margin-left:auto}
+#mh details[open]>summary::after{content:'▴'}
+#mh summary:focus-visible{outline:3px solid var(--m-ac);outline-offset:-3px}
+#mh .mtop{flex:1;min-height:0;display:flex;flex-direction:column}
+#mh .mhead{display:flex;align-items:center;gap:12px;padding:8px 10px;background:var(--kb);border-bottom:2px solid var(--key-b);font-size:1.3em}
+#mh #mback{background:#d62828;color:#fff;border-color:#ff9c94;font-weight:700}
+#mh .mbody{flex:1;min-height:0;overflow:auto;padding:0 10px;max-width:760px;width:100%;margin:0 auto}
+.rside #tmat,.rside #tmat[aria-pressed="true"]{background:#d62828;color:#fff;border-color:#ff9c94;box-shadow:0 0 0 2px rgba(255,255,255,.35);font-size:17px}
+.rside #tmat:hover{background:#ef3b3b}
+.rside #tmat[aria-pressed="true"]{background:#8f0f0f;box-shadow:0 0 0 3px #fff inset}
+#mh .mt{border:2px solid var(--m-bd);border-radius:12px;margin:8px 0;background:var(--m-card)}
+#mh .mtb{padding:0 10px 10px}
+#mh .hb,#mh .chips,#mh .mrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+#mh .chip{min-height:48px;font-size:1em;text-align:left;width:100%}
+#mh .chips{flex-direction:column;flex-wrap:nowrap;gap:6px}
+#mh .hint{color:var(--m-mut);margin:6px 0}
+#mh .fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:10px 0}
+#mh label{display:flex;flex-direction:column;gap:4px;font-size:.9em;color:var(--m-mut)}
+#mh input{font:inherit;font-size:1.3em;min-height:56px;width:100%;text-align:center;border:2px solid var(--m-bd);border-radius:10px;background:var(--m-bg);color:var(--m-ink)}
+#mh input:focus{border-color:var(--m-ac);outline:3px solid var(--m-ac)}
+#mh .nums{font-size:1.2em;margin:4px 0}
+#mh .res{background:var(--m-bg);border:2px solid var(--m-bd);border-radius:14px;padding:12px;margin-top:10px}
+#mh .pre{font-size:1.35em;text-align:center;margin:10px 0}
+#mh ol{padding-left:1.4rem;margin:10px 0}
+#mh li{margin:10px 0}
+#mh .ans{border-left:8px solid var(--m-ac);padding:8px 12px;font-size:1.25em;font-weight:600;background:var(--m-card);border-radius:0 10px 10px 0}
+#mh .cap{color:var(--m-mut);margin:4px 0;font-size:.9em}
+#mh .stp{margin-top:10px}
+#mh .stp>summary{min-height:48px;border:2px solid var(--m-bd);border-radius:10px;background:var(--m-card)}
+#mh .stp[open]>summary{margin-bottom:6px}
+#mh .gr{width:100%;max-width:420px;display:block;margin:12px 0;background:var(--m-card);border:2px solid var(--m-bd);border-radius:12px}
+#mh .gr line{stroke-linecap:round}
+#mh .grd{stroke:var(--m-bd);stroke-width:.6}
+#mh .ax{stroke:var(--m-ink);stroke-width:1.2}
+#mh .g1{stroke:var(--m-ac);stroke-width:2.5}
+#mh .g2{stroke:var(--m-c2);stroke-width:2.5}
+#mh .gr text{fill:var(--m-ink);font-size:9px;font-family:inherit}
+#mh .gr .pl{font-size:10px;font-weight:600}
+#mh .gr circle{fill:var(--m-ink)}
+#mh #mpad{position:sticky;bottom:0;background:var(--m-card);border-top:2px solid var(--m-bd);padding:8px;margin:8px -10px 0}
+#mh #mpad[hidden]{display:none}
+#mh #pk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:460px;margin:0 auto}
+#mh #pk button{min-height:46px;font-size:1.3em}
+#mh #pk .nx{grid-column:span 2;background:var(--m-ac);color:var(--m-act);border-color:var(--m-ac);font-size:1.05em;font-weight:600}
+</style>
+<style>
+:root{--kh:54px}
+body,button,input{font-family:'Lexend',system-ui,sans-serif}
+button{touch-action:manipulation}
+.c{font-family:'Patrick Hand',system-ui,sans-serif;width:var(--cs,44px);height:var(--cs,44px);font-size:calc(var(--cs,44px)*.74)}
+.c .s{font-size:calc(var(--cs,44px)*.47)}
+.c .e,.c .fn,.c .fd{font-size:calc(var(--cs,44px)*.41)}
+.row,.keys{gap:8px}
+.tab{min-height:48px;font-size:18px}
+.keys .lbl{font-size:16px}
+.nmk small{font-size:15px}
+.kh{font-size:18px}
+.fl{font-size:16px}
+.grip{height:28px}
+.grip span{height:7px;width:90px}
+.rside{width:100px;gap:8px}
+.paperwrap{padding:6px}
+.side #tsize{min-height:52px;font-size:18px;width:100%}
+.fl.wl{font-size:18px;color:var(--ink);font-weight:600}
+.side .wheel{width:min(100%,256px);height:auto;aspect-ratio:1/1;border:4px solid var(--ink);box-shadow:0 0 0 2px var(--key-b),0 4px 14px rgba(0,0,0,.45);background:radial-gradient(circle closest-side,#fff 0%,rgba(255,255,255,.85) 8%,rgba(255,255,255,0) 62%),conic-gradient(hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%))}
+.side .wm{width:36px;height:36px;margin:-18px 0 0 -18px;border:5px solid #fff;box-shadow:0 0 0 3px #000,0 2px 8px rgba(0,0,0,.55)}
+.rside #tcol{display:flex;align-items:center;justify-content:center}
+.kb.min .row,.kb.min .keys,.kb.min .calc{display:none}
+#kbbody{display:flex;flex-direction:column;gap:7px;align-items:center;width:100%}
+.wheel{position:relative;width:220px;height:220px;max-width:100%;align-self:center;border-radius:50%;touch-action:none;cursor:crosshair;border:3px solid var(--key-b);background:radial-gradient(circle closest-side,#fff,rgba(255,255,255,0)),conic-gradient(hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%))}
+.wm{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 2px #000;pointer-events:none}
+.wm[hidden]{display:none}
+#wipedlg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px}
+#wipedlg[hidden]{display:none}
+#wipedlg .box{background:var(--kb);color:var(--ink);border:3px solid var(--key-b);padding:24px;max-width:440px;width:100%;display:flex;flex-direction:column;gap:16px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#wipedlg h2{margin:0;font-size:26px;font-weight:600}
+#wipedlg p{margin:0;font-size:18px;color:var(--muted)}
+#wipedlg .btns{display:flex;gap:12px}
+#wipedlg .btns button{flex:1;min-height:68px;font-size:22px;font-weight:600}
+#wipeno{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+#wipeyes{background:var(--danger);color:var(--danger-t);border-color:var(--danger-t)}
+.rside button,.rside #tmat{writing-mode:horizontal-tb;width:100%;min-height:64px;padding:6px;font-size:18px;font-weight:600;line-height:1.15}
+.side{right:108px;width:290px}
+.side button{min-height:52px}
+.side .chead button,.calc .chead button{min-height:48px;width:48px;font-size:20px}
+.side .sw button{height:48px}
+.calc button{min-height:54px}
+#mh,#mh button,#mh input{font-family:'Lexend',system-ui,sans-serif}
+#mh{font-size:calc(18px*var(--mfs))}
+#mh button{min-height:58px}
+#mh #pk{gap:10px}
+#mh #pk button{min-height:62px}
+#mh summary,#mh .stp>summary{min-height:60px}
+#mh input{min-height:64px}
+#mh .tp{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+#mh .tp>.stp{flex:1;margin:0;min-width:0}
+#mh .spk{flex:none;width:124px;min-height:60px;padding:0 6px;font-size:.9em}
+#mh .stp b{font-weight:600}
+#mh .srch{display:flex;gap:8px;margin:10px 0}
+#mh .srch input{text-align:left;flex:1;min-width:0;padding:0 14px}
+#mh .srch button{flex:none;padding:0 14px}
+#mh .tp[hidden],#mh details[hidden]{display:none}
+#mh select{font:inherit;font-size:1em;min-height:56px;width:100%;border:2px solid var(--m-bd);background:var(--m-bg);color:var(--m-ink);padding:0 8px;border-radius:10px}
+#mh .vbox{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0}
+#mh #mnow{position:sticky;top:0;z-index:5;background:var(--m-card);border:3px solid var(--m-ac);padding:10px;margin:8px 0;font-size:1.2em;display:flex;gap:10px;align-items:center}
+#mh #mnow[hidden]{display:none}
+#mh #mnow span{flex:1}
+#mh .spc{flex:none;width:124px;display:flex;flex-direction:column;gap:6px}
+#mh .spc .spk{width:100%}
+#mh .spd{min-height:52px;font-size:.85em;padding:0 4px}
+#mh .stp .hint{font-size:1em}
+#mh .gr text{font-size:11px}
+#mh .gr .pl{font-size:12px}
+@media (max-width:640px){
+.mid{flex-direction:column}
+.rside{flex-direction:row;width:100%;overflow-x:auto;overflow-y:hidden;padding:6px;align-self:stretch}
+.rside button,.rside #tmat{width:auto;flex:1;white-space:nowrap;min-height:52px;padding:0 10px}
+.side{right:8px;width:calc(100% - 16px)}
+}
+</style>
+<style id="polish">
+/* Pen og ryddig utseende. Bruker de samme fargevariablene, så Farger-valget virker som før. */
+:root{--raise:0 2px 0 rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08);--card-sh:0 10px 30px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.2);--ui:'Lexend',system-ui,-apple-system,'Segoe UI',sans-serif}
+*{scrollbar-width:thin;scrollbar-color:var(--key-b) transparent}
+body{font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.c{font-family:'Patrick Hand',system-ui,sans-serif}
+button{font-family:var(--ui);font-weight:500;border:1px solid rgba(255,255,255,.12);border-radius:11px;transition:background .15s,transform .08s,box-shadow .15s,filter .15s}
+.kb button,.side button,.calc button,.rside button{box-shadow:var(--raise)}
+button:active{transform:translateY(1px) scale(.98);box-shadow:none!important}
+.paperwrap{background:radial-gradient(900px 500px at 50% -5%,rgba(255,255,255,.07),transparent 65%)}
+#paper{border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,.18);box-shadow:0 14px 40px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.2)}
+.c.cur{outline-width:2px;border-radius:3px}
+.kb{border-top:1px solid rgba(255,255,255,.1);border-radius:22px 22px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.16);padding:10px 12px 12px;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 40%),var(--kb)}
+.row.tabs{background:rgba(0,0,0,.24);padding:4px;border-radius:15px;gap:4px;max-width:560px}
+.tab{background:transparent;border-color:transparent;box-shadow:none!important;border-radius:11px;font-size:14px;font-weight:500;letter-spacing:.01em;color:var(--muted)}
+.tab:hover{background:rgba(255,255,255,.07)}
+.tab[aria-pressed="true"],.toggle[aria-pressed="true"]{background:var(--accent);color:var(--accent-t);font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.3)!important}
+.keys button{font-weight:500}
+.keys .lbl,.row .nm{font-size:13px}
+.row .ctl{font-size:18px}
+.grip span{height:4px;border-radius:99px;opacity:.7}
+.rside{gap:7px;padding:10px 8px}
+.rside button{border-radius:12px;font-size:13px;font-weight:600;letter-spacing:.03em;background:var(--key)}
+.rside button:hover{background:var(--key-h)}
+.rside button[aria-pressed="true"]{background:var(--accent);color:var(--accent-t)}
+.rside #tmat,.rside #tmat[aria-pressed="true"]{background:linear-gradient(180deg,#f2694f,#d8412c);border-color:transparent;color:#fff;font-size:14px;box-shadow:0 6px 16px rgba(216,65,44,.4),inset 0 1px 0 rgba(255,255,255,.3)}
+.rside #tmat:hover{filter:brightness(1.08);background:linear-gradient(180deg,#f2694f,#d8412c)}
+.side,.calc,#wipedlg .box{border-radius:18px;border:1px solid rgba(255,255,255,.12);box-shadow:var(--card-sh)}
+.calc{border-radius:18px 18px 0 0}
+.chead{font-weight:600}
+.cres{font-variant-numeric:tabular-nums;font-weight:500;border-bottom:1px solid var(--key-b)}
+.calc button.eq,.fkeys .ins{background:var(--accent);color:var(--accent-t);font-weight:600}
+.calctab{border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.side .sw button{border-radius:50%;box-shadow:none}
+#wipedlg{backdrop-filter:blur(3px)}
+/* Ark-faner */
+.sbar{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--kb);border-top:1px solid rgba(255,255,255,.1)}
+.stabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.stabs::-webkit-scrollbar{display:none}
+.sbar button{min-height:34px;box-shadow:none;font-size:14px}
+.stab{flex:none;padding:0 14px;background:transparent;border-color:transparent;color:var(--muted);white-space:nowrap;border-radius:10px}
+.stab:hover{background:rgba(255,255,255,.07)}
+.stab[aria-pressed="true"]{background:var(--accent);color:var(--accent-t);font-weight:600}
+.stab-in{flex:none;width:130px;min-height:34px;font:inherit;font-size:14px;padding:0 10px;border:2px solid var(--accent);border-radius:10px;background:var(--bg);color:var(--ink)}
+.sbtn{flex:none;width:38px;padding:0;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
+.sbtn:disabled{opacity:.35;cursor:default}
+#sdel[data-sure="1"]{background:var(--danger);color:var(--danger-t);border-color:var(--danger-t)}
+/* Mattehjelperen */
+#mh,#mh button,#mh input,#mh summary{font-family:var(--ui)}
+#mh .mhead{background:var(--kb);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 4px 18px rgba(0,0,0,.22);font-size:1.15em;font-weight:600}
+#mh .mt,#mh .res,#mh .gr,#mh .stp>summary,#mh button,#mh input,#mh .chip{border-radius:14px!important}
+#mh .mt,#mh .res{border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+#mh .mt{margin:10px 0}
+#mh summary{font-weight:600;font-size:1.02em}
+#mh summary::after{content:'';width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-3px);margin-right:4px;opacity:.7;transition:transform .2s}
+#mh details[open]>summary::after{content:'';transform:rotate(225deg) translate(-2px,-2px)}
+#mh button{border:1px solid rgba(255,255,255,.14);font-weight:500;box-shadow:var(--raise)}
+#mh .chip{background:var(--m-bg);transition:background .15s,border-color .15s}
+#mh .chip:hover{background:var(--key-h);border-color:var(--m-ac)}
+#mh .pri,#mh button[aria-pressed="true"]{font-weight:600}
+#mh #mback{background:linear-gradient(180deg,#f2694f,#d8412c);border-color:transparent;box-shadow:0 4px 12px rgba(216,65,44,.35)}
+#mh input{border:1px solid var(--m-bd);font-weight:500}
+#mh input:focus{outline:3px solid color-mix(in srgb,var(--m-ac) 55%,transparent);outline-offset:0}
+#mh .ans{border-left:6px solid var(--m-ac);border-radius:0 14px 14px 0!important}
+#mh .hint,#mh .cap{line-height:1.5}
+#mh #mpad{border-top:1px solid var(--m-bd);box-shadow:0 -8px 20px rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:reduce){button,#mh summary::after{transition:none}}
+
+/* Grafer og figurer */
+#paper{position:relative}
+.ovl{position:absolute;inset:0;pointer-events:none;z-index:3}
+.gobj{position:absolute;pointer-events:auto;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.gobj:active{cursor:grabbing}
+.gobj svg{display:block;pointer-events:none;overflow:visible}
+.gobj.sel{outline:2px dashed var(--curline,#1f7a4d);outline-offset:3px}
+.gobj .gx{position:absolute;top:-14px;right:-14px;width:28px;height:28px;min-height:0;padding:0;border-radius:50%;display:none;align-items:center;justify-content:center;background:#d62828;color:#fff;border:2px solid #fff;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.gobj .gh{position:absolute;right:-12px;bottom:-12px;width:22px;height:22px;border-radius:50%;display:none;background:var(--accent);border:2px solid #fff;cursor:nwse-resize;touch-action:none;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.gobj.sel .gx{display:flex}
+.gobj.sel .gh{display:block}
+.gghost{position:fixed;z-index:80;pointer-events:none;opacity:.75;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35))}
+.gghost svg{display:block}
+#pgraf.drag{opacity:.12;pointer-events:none}
+.gtab{grid-column:1/-1;display:flex;flex-direction:column;gap:8px}
+.gtab .gpal{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+.gbox{display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,.22);border:1px solid var(--key-b);border-radius:14px;padding:10px 12px;width:100%;max-width:380px}
+.gs{display:grid;grid-template-columns:62px 1fr 58px;align-items:center;gap:8px;font-size:16px}
+.gs .gl{font-size:15px}
+.gs b{text-align:right;font-weight:600;font-size:16px;font-variant-numeric:tabular-nums}
+.gs input[type=range]{width:100%;height:30px;accent-color:var(--accent);margin:0;cursor:pointer}
+.gtab .gsel{align-items:flex-start}
+.gpal{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.gi{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-height:84px;padding:5px;font-size:13px;touch-action:none;cursor:grab}
+.gi .gt{background:#fff;border-radius:8px;width:100%;height:62px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gi .gt svg{max-width:100%;max-height:58px;width:auto;height:auto}
+.gi small{font-size:12px;color:var(--ink);line-height:1.1;text-align:center}
+#gsel,.gsel{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--key-b);padding-top:8px}
+.gp{display:flex;align-items:center;gap:8px}
+.gp span{width:30px;font-size:17px;text-align:center}
+.gp b{flex:1;text-align:center;font-weight:500;font-size:18px}
+.gp button{min-height:40px;font-size:20px;width:46px;flex:none}
+.gb{display:flex;gap:6px}
+.gb button{min-height:40px;flex:1;font-size:16px}
+.gb .gdel{background:var(--danger);color:var(--danger-t)}
+</style>
+<style id="drawcss">
+.ink{position:absolute;left:0;top:0;pointer-events:none;z-index:4;overflow:hidden}
+#paper.drawing .ink{pointer-events:auto;cursor:crosshair;touch-action:none}
+#paper.nogrid .c{border-right-color:transparent!important}
+#paper.nogrid .c:not(.u){border-bottom-color:transparent!important}
+#dcol{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#dcol button{height:44px;min-height:0;padding:0;border:3px solid transparent}
+#dcol button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--kb) inset}
+#dtool,#dw,#dfs{display:flex;gap:6px}
+#dtool button,#dw button,#dfs button{flex:1;min-height:44px;font-size:17px;padding:0}
+#dclr{min-height:46px;font-size:17px}
+.tbl{position:absolute;inset:0;pointer-events:none;z-index:5}
+.tb{position:absolute;white-space:pre;line-height:1.15;font-family:'Patrick Hand',system-ui,sans-serif;pointer-events:none}
+.tbt{outline:none;min-width:1.4em;min-height:1.15em;padding:2px 4px;white-space:pre;cursor:text}
+.texting .tb{pointer-events:auto;outline:2px dashed #2f6fd6;outline-offset:1px;background:rgba(255,255,255,.55)}
+.tbh{display:none;position:absolute;left:-2px;top:-34px;gap:4px;z-index:2}
+.texting .tb:focus-within .tbh{display:flex}
+.tbh span{width:32px;height:30px;display:flex;align-items:center;justify-content:center;background:#2f6fd6;color:#fff;font:700 16px system-ui,sans-serif;user-select:none;touch-action:none}
+.tbh .tbm{cursor:move}.tbh .tbd{background:#d62828;cursor:pointer}
+</style>
+</head>
+<body>
+<section id="mh" hidden>
+<div class="mtop"><div class="mhead"><button type="button" id="mback">← Rutepapir</button><span>Mattehjelp: håndbok</span></div>
+<div class="mbody">
+  <div class="srch"><input id="msq" type="search" placeholder="Søk i hjelpen og appen…" aria-label="Søk i hjelpen og appen" autocomplete="off"><button type="button" id="msx">Tøm</button></div>
+  <div id="mnow" hidden><span id="mnowt"></span><button type="button" id="mstop">■ Stopp</button></div>
+  <div class="hb"><button type="button" id="fm" aria-label="Mindre tekst">A−</button><button type="button" id="fp" aria-label="Større tekst">A+</button></div>
+  <p class="hint">Velg et emne og trykk på det for å se hvordan du løser oppgaver steg for steg. Trykk «Les opp» ved siden av for å høre et eksempel.</p>
+  <div id="mlist"></div>
+  <div id="mtips" aria-live="polite"></div>
+</div>
+</div>
+</section>
+<div class="mid">
+  <div class="paperwrap" id="wrap"><div id="paper" aria-label="Rutepapir"></div></div>
+  <div class="rside">
+    <button type="button" id="tcol" aria-pressed="false" aria-label="Innstillinger" title="Innstillinger: farger, lys eller mørk og størrelse på rutene"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <button type="button" id="tgraf" aria-pressed="false" title="Grafer og figurer: dra ut på arket">Grafer</button>
+    <button type="button" id="tundo" title="Angre siste endring (Ctrl+Z)">Angre</button>
+    <button type="button" id="tsave" title="Lagre arket som bilde">Lagre bilde</button>
+    <button type="button" id="tdraw" aria-pressed="false" title="Tegn på arket med penn og viskelær">Tegn</button>
+    <button type="button" id="tmat" aria-pressed="false" title="Gå til side 2: mattehjelperen">Mattehjelp</button>
+  </div>
+  <aside class="side" id="pcol" hidden aria-label="Innstillinger">
+    <div class="chead"><span>Innstillinger</span><button type="button" data-p="CLOSE" title="Lukk">✕</button></div>
+    <div class="fl">Størrelse på rutene</div>
+    <div class="tg"><button type="button" id="tsize" title="Gjør rutene større eller mindre">Ruter: middels</button></div>
+    <div class="fl">Lys eller mørk</div>
+    <div class="tg" id="tmode"><button type="button" data-m="d">Mørk</button><button type="button" data-m="l">Lys</button></div>
+    <div class="fl wl">Fargehjul: trykk eller dra på hjulet</div>
+    <div class="wheel" id="wheel" role="img" aria-label="Fargehjul. Trykk eller dra for å velge farge."><span class="wm" id="wm" hidden></span></div>
+    <div class="fl">Midten er grå. Lenger ut blir fargen sterkere.</div>
+    <div class="fl wl">Ferdige farger</div>
+    <div class="sw" id="sw"></div>
+    <div class="fl wl">Oppdatering</div>
+    <div class="fl" id="uver">Versjon 1.0.0</div>
+    <div class="tg"><button type="button" id="ucheck">Se etter oppdatering</button></div>
+    <div class="fl" id="ustat" role="status" aria-live="polite"></div>
+    <div class="tg"><button type="button" id="udl" hidden>Last ned oppdatering</button></div>
+  </aside>
+  <aside class="side" id="pfra" hidden aria-label="Brøk">
+    <div class="chead"><span>Brøk</span><button type="button" data-p="CLOSE" title="Lukk">✕</button></div>
+    <div class="fprev">
+      <button type="button" class="fbox" id="ftt" data-f="T"><small>teller</small><b></b></button>
+      <div class="fbar"></div>
+      <button type="button" class="fbox" id="fnn" data-f="N"><small>nevner</small><b></b></button>
+    </div>
+    <div class="fkeys" id="fkeys"></div>
+    <div class="fl">Vanlige brøker:</div>
+    <div class="fq" id="fq"></div>
+  </aside>
+</div>
+<aside class="side" id="pgraf" hidden aria-label="Grafer og figurer">
+    <div class="chead"><span>Grafer og figurer</span><button type="button" data-p="CLOSE" title="Lukk">✕</button></div>
+    <div class="fl">Dra ut på arket, eller trykk for å sette inn.</div>
+    <div class="gpal" id="gpal"></div>
+    <div id="gsel"></div>
+  </aside>
+  <aside class="side" id="pdraw" hidden aria-label="Tegneverktøy">
+    <div class="chead"><span>Tegn</span><button type="button" data-p="CLOSE" title="Lukk">✕</button></div>
+    <div class="fl">Tegn med finger, penn eller mus rett på arket. Velg «Tekst» og trykk på arket for å sette inn en tekstboks. Trykk ✕ når du vil skrive i rutene igjen.</div>
+    <div class="tg" id="dtool"><button type="button" data-t="pen" aria-pressed="true">Penn</button><button type="button" data-t="er" aria-pressed="false">Viskelær</button><button type="button" data-t="tx" aria-pressed="false">Tekst</button></div>
+    <div class="fl">Farge</div>
+    <div class="sw" id="dcol"></div>
+    <div class="fl">Tykkelse</div>
+    <div class="tg" id="dw"><button type="button" data-w="2" aria-pressed="false">Tynn</button><button type="button" data-w="4" aria-pressed="true">Middels</button><button type="button" data-w="9" aria-pressed="false">Tykk</button></div>
+    <div class="fl">Tekststørrelse</div>
+    <div class="tg" id="dfs"><button type="button" data-f="16" aria-pressed="false">Liten</button><button type="button" data-f="25" aria-pressed="true">Middels</button><button type="button" data-f="38" aria-pressed="false">Stor</button></div>
+    <button type="button" id="dclr">Slett all tegning</button>
+  </aside>
+<div id="wipedlg" role="alertdialog" aria-modal="true" aria-labelledby="wipeh" hidden>
+  <div class="box">
+    <h2 id="wipeh">Er du sikker på at du vil tømme arket?</h2>
+    <p>Alt du har skrevet blir borte. Du kan trykke Angre rett etterpå for å få det tilbake.</p>
+    <div class="btns"><button type="button" id="wipeno">Nei, behold</button><button type="button" id="wipeyes">Ja, tøm arket</button></div>
+  </div>
+</div>
+<div class="sbar" id="sbar">
+  <div class="stabs" id="stabs" aria-label="Ark"></div>
+  <button type="button" class="sbtn" id="sadd" title="Nytt ark" aria-label="Nytt ark">+</button>
+  <button type="button" class="sbtn" id="sren" title="Gi arket nytt navn (eller dobbeltklikk på fanen)" aria-label="Gi arket nytt navn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+  <button type="button" class="sbtn" id="sdel" title="Slett arket" aria-label="Slett arket"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg></button>
+</div>
+<div class="kb" id="kb">
+  <aside class="calc" id="calc" hidden aria-label="Kalkulator">
+    <div class="chead"><span>Kalkulator</span><button type="button" data-k="CLOSE" title="Lukk kalkulatoren">✕</button></div>
+    <div class="cexpr" id="cexpr"></div><div class="cres" id="cres">0</div>
+    <div class="ckeys" id="ckeys"></div>
+  </aside>
+  <div class="grip" id="grip" role="separator" aria-label="Dra opp eller ned for å endre høyden på tastaturet" title="Dra opp eller ned for å endre høyden, eller trykk for å skjule og vise tastaturet"><span></span></div>
+  <div id="kbbody">
+  <div class="row tabs" id="tabs"></div>
+  <div class="row">
+    <button class="nm" data-a="@p2">Opphøyd i 2</button>
+    <button class="nm" data-a="@p3">Opphøyd i 3</button>
+    <button class="nm toggle" id="sup" aria-pressed="false" data-a="@sup" title="Slå på for å skrive hevet, for eksempel 10 i 3·10⁵. Trykk igjen for å slå av.">Potens</button>
+    <button class="nm" data-a="√">Kvadratrot</button>
+  </div>
+  <div class="keys" id="keys"></div>
+  <div class="row">
+    <button class="ctl" style="flex:2" data-a="@bs" title="Slett den markerte ruten">⌫ Slett</button>
+    <button class="ctl wide" data-a="@sp">mellomrom</button>
+    <button class="ctl" data-a="@en" title="Ny linje">↵</button>
+    <button class="ctl" data-a="@l">←</button>
+    <button class="ctl" data-a="@u">↑</button>
+    <button class="ctl" data-a="@d">↓</button>
+    <button class="ctl" data-a="@r">→</button>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+  var TABS={
+    'Tall':{n:6,m:5,k:'7 8 9 ÷ ( )|4 5 6 × x =|1 2 3 − y ,|0 . % + ⇒ —|@both @copy @clr @calc @frac'},
+    'Likninger':{n:4,list:['Tips: gjør det samme på begge sider til x står alene',
+      'Ukjent',['x','x','ukjent x'],['y','y','ukjent y'],['a','a','tall a'],['b','b','tall b'],
+      'Er lik og ulikheter',['=','=','er lik'],['≠','≠','er ikke lik'],['≈','≈','omtrent lik'],['⇒','⇒','gir'],['<','<','mindre enn'],['>','>','større enn'],['≤','≤','mindre eller lik'],['≥','≥','større eller lik'],
+      'Regnetegn',['+','+','pluss'],['−','−','minus'],['×','×','gange'],['÷','÷','dele'],
+      'Brøk, potens og rot',['—','—','brøkstrek'],['x²','@p2','opphøyd i 2'],['x³','@p3','opphøyd i 3'],['√','√','kvadratrot'],
+      'Parentes og fortegn',['(','(','start parentes'],[')',')','slutt parentes'],['±','±','pluss eller minus'],['%','%','prosent'],
+      'Løsning',['x =','@xeq','svar: x ='],['|','@both','begge sider'],['↓','@copy','kopier linja'],['✕','@clr','slett linja']]},
+    'Symboler':{n:7,k:'√ ∛ π ² ³ ^ °|≈ ≠ ≤ ≥ < > ±|∞ ∠ △ ⊥ ∥ α β|θ Δ · : ; ! /|— [ ] { } | →'},
+    'Grafer':{n:1,k:''},
+    'abc':{n:8,k:'@sh a b c d e f g|h i j k l m n o|p q r s t u v w|x y z æ ø å'}
+  };
+  var LBL={'@both':'Begge sider |','@copy':'Kopier linja ned','@clr':'Slett linja','@calc':'Kalkulator','@frac':'Brøk'};
+  var tab='Tall',shift=false,sup=false,sure=0;
+  var rows=[],cur={r:0,c:0},COLS=20,ROWS=24,CS=34;try{var sc0=+localStorage.getItem('rp-cs');if(sc0>=20&&sc0<=80)CS=sc0;}catch(e){}
+  var $p=document.getElementById('paper'),$k=document.getElementById('keys'),$t=document.getElementById('tabs'),$w=document.getElementById('wrap');
+
+  function layout(){
+    var w=Math.max(260,$w.clientWidth-14);
+    COLS=Math.max(8,Math.min(60,Math.floor(w/CS)));
+    if(cur.c>=COLS)cur.c=COLS-1;
+  }
+  function render(){
+    ROWS=Math.max(60,Math.ceil($w.clientHeight/CS)+1,rows.length+8,cur.r+10,Math.ceil(objBottom())+2);
+    $p.style.setProperty('--cs',CS+'px');$p.style.gridTemplateColumns='repeat('+COLS+','+CS+'px)';
+    var h='';
+    for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+      var cell=rows[r]&&rows[r][c];
+      var cls='c'+(r===cur.r&&c===cur.c?' cur':'')+(cell&&cell.u?' u':'');
+      var inner='';
+      if(cell&&cell.c){
+        if(cell.s){cls+=' hasS';inner='<span class="s">'+esc(cell.c)+'</span>';}
+        else if(cell.e){cls+=' hasE';inner='<span class="b">'+esc(cell.c)+'</span><span class="e">'+esc(cell.e)+'</span>';}
+        else inner=esc(cell.c);
+      }else if(cell&&cell.f){cls+=' hasF';inner='<span class="fn">'+esc(cell.f[0])+'</span><span class="fd">'+esc(cell.f[1])+'</span>';
+      }
+      h+='<div class="'+cls+'" data-r="'+r+'" data-c="'+c+'">'+inner+'</div>';
+    }
+    $p.innerHTML=h;drawObjs();drawInk();drawTexts();
+    var el=$p.querySelector('.cur');if(el&&el.scrollIntoView)el.scrollIntoView({block:'nearest',inline:'nearest'});
+    saveAll();
+  }
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function put(r,c,v){while(rows.length<=r)rows.push([]);rows[r][c]=v;}
+  var hist=[],objs=[],inks=[],texts=[],sel=null;var gridOn=true;try{gridOn=localStorage.getItem('rp-grid')!=='0';}catch(e){}
+  var sheets=[{name:'Ark 1',rows:[],cur:{r:0,c:0},hist:[],objs:[],inks:[],texts:[]}],curSheet=0,renaming=false,delSure=0,delT=0;
+  function keep(){var s=sheets[curSheet];s.rows=rows;s.cur=cur;s.hist=hist;s.objs=objs;s.inks=inks;s.texts=texts;}
+  function saveAll(){keep();try{localStorage.setItem('rp-sheets',JSON.stringify({act:curSheet,sheets:sheets.map(function(s){return {name:s.name,rows:s.rows,cur:s.cur,objs:s.objs||[],inks:s.inks||[],texts:s.texts||[]};})}));}catch(e){}}
+  function load(i){curSheet=i;var s=sheets[i];rows=s.rows;cur=s.cur;hist=s.hist||(s.hist=[]);objs=s.objs||(s.objs=[]);inks=s.inks||(s.inks=[]);texts=s.texts||(s.texts=[]);sel=null;if(cur.c>=COLS)cur.c=COLS-1;render();drawSheets();}
+  function gotoSheet(i){keep();load(i);}
+  function drawSheets(){
+    var $sb=document.getElementById('stabs'),h='';
+    sheets.forEach(function(s,i){
+      if(i===curSheet&&renaming)h+='<input class="stab-in" id="srn" maxlength="24" value="'+esc(s.name).replace(/"/g,'&quot;')+'" aria-label="Navn på arket">';
+      else h+='<button type="button" class="stab" data-i="'+i+'" aria-pressed="'+(i===curSheet)+'">'+esc(s.name)+'</button>';
+    });
+    $sb.innerHTML=h;
+    var inp=document.getElementById('srn');
+    if(inp){
+      var done=false;
+      var fin=function(ok){if(done)return;done=true;renaming=false;if(ok){var v=inp.value.trim();if(v){sheets[curSheet].name=v.slice(0,24);saveAll();}}drawSheets();};
+      inp.focus();inp.select();
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')fin(true);else if(e.key==='Escape')fin(false);});
+      inp.addEventListener('blur',function(){fin(true);});
+    }
+    var a=$sb.querySelector('[aria-pressed="true"]');if(a&&a.scrollIntoView)a.scrollIntoView({block:'nearest',inline:'nearest'});
+    var d=document.getElementById('sdel');
+    d.dataset.sure=delSure?'1':'0';d.disabled=sheets.length<2;
+    d.title=delSure?'Trykk igjen for å slette arket':'Slett arket';
+  }
+  function stateStr(){return JSON.stringify({rows:rows,cur:cur,objs:objs,inks:inks,texts:texts});}
+  function snap(){var s=stateStr();if(hist[hist.length-1]!==s){hist.push(s);if(hist.length>200)hist.shift();}}
+  function undo(){
+    var now=stateStr(),s=null,t;
+    while(hist.length){t=hist.pop();if(t!==now){s=t;break;}}
+    if(!s)return;
+    var o=JSON.parse(s);rows=o.rows;cur=o.cur;objs=o.objs||[];inks=o.inks||[];texts=o.texts||[];sel=null;refreshSel();
+    if(cur.c>=COLS)cur.c=COLS-1;
+  }
+  function adv(){cur.c++;if(cur.c>=COLS){cur.c=0;cur.r++;}}
+  function attachExp(ch,append){
+    var sel=rows[cur.r]&&rows[cur.r][cur.c];
+    var pv=cur.c>0?(rows[cur.r]&&rows[cur.r][cur.c-1]):null;
+    var t=(sel&&sel.c&&!sel.s)?sel:((pv&&pv.c&&!pv.s)?pv:null);
+    if(!t)return false;
+    if(append&&t.e)t.e=(t.e+ch).slice(0,3);else if(!append&&t.e===ch)t.e='';else t.e=ch;
+    return true;
+  }
+  function act(a){
+    if(a==='@undo'){undo();render();return;}
+    if(!/^@(l|r|u|d|frac|calc|sup|sh|grid)$/.test(a))snap();
+    if(a==='@bs'){
+      put(cur.r,cur.c,null);
+    }else if(a==='@sp'){put(cur.r,cur.c,null);adv();}
+    else if(a==='@en'){cur.r++;cur.c=0;}
+    else if(a==='@l'){if(cur.c>0)cur.c--;else if(cur.r>0){cur.r--;cur.c=COLS-1;}}
+    else if(a==='@r'){if(cur.c<COLS-1)cur.c++;else{cur.c=0;cur.r++;}}
+    else if(a==='@u'){if(cur.r>0)cur.r--;}
+    else if(a==='@d'){cur.r++;}
+    else if(a==='@p2'||a==='@p3'){var n=a==='@p2'?'2':'3';if(!attachExp(n,false)){put(cur.r,cur.c,{c:n,s:true});adv();}}
+    else if(a==='@both'){cur.c=Math.min(COLS-1,Math.max(cur.c+2,COLS-8));put(cur.r,cur.c,{c:'|',s:false});adv();}
+    else if(a==='@copy'){while(rows.length<=cur.r+1)rows.push([]);rows[cur.r+1]=(rows[cur.r]||[]).map(function(x){return x?{c:x.c,s:x.s,e:x.e,u:x.u,f:x.f}:x;});cur.r++;cur.c=0;}
+    else if(a==='@clr'){while(rows.length<=cur.r)rows.push([]);rows[cur.r]=[];cur.c=0;}
+    else if(a==='@xeq'){put(cur.r,cur.c,{c:'x',s:false});adv();put(cur.r,cur.c,{c:'=',s:false});adv();}
+    else if(a==='@frac'){panel('f');return;}
+    else if(a==='@calc'){toggleCalc();return;}
+    else if(a==='@sup'){sup=!sup;var sb=document.getElementById('sup');sb.setAttribute('aria-pressed',sup);sb.textContent=sup?'Potens: PÅ':'Potens';return;}
+    else if(a==='@sh'){shift=!shift;keys();return;}
+    else if(a==='@grid'){gridOn=!gridOn;try{localStorage.setItem('rp-grid',gridOn?'1':'0');}catch(e){}applyGrid();return;}
+    else if(a==='@wipe'){
+      var b=document.getElementById('wipe');
+      if(!sure){sure=1;document.getElementById('wipedlg').hidden=false;document.getElementById('wipeno').focus();return;}
+      document.getElementById('wipedlg').hidden=true;
+      rows=[];objs=[];inks=[];texts=[];sel=null;cur={r:0,c:0};sure=0;b.dataset.sure='0';b.textContent='Tøm arket';
+    }else{
+      var ch=a;if(shift&&/^[a-zæøå]$/.test(ch)){ch=ch.toUpperCase();shift=false;keys();}
+      if(sup&&attachExp(ch,true)){}else{put(cur.r,cur.c,{c:ch,s:sup});adv();}
+    }
+    render();
+  }
+  function keys(){
+    var d=TABS[tab],m=d.m||1;$k.style.gridTemplateColumns='repeat('+(d.n*m)+',1fr)';$k.textContent='';$k.classList.toggle('scroll',!!d.list);
+    if(tab==='Grafer'){$k.classList.add('scroll');buildGrafTab($k);return;}
+    if(d.list){
+      d.list.forEach(function(it){
+        if(typeof it==='string'){var h=document.createElement('div');h.className='kh';h.textContent=it;$k.appendChild(h);return;}
+        var b=document.createElement('button');b.type='button';b.className='nmk';
+        var s1=document.createElement('span');s1.textContent=it[0];
+        var s2=document.createElement('small');s2.textContent=it[2];
+        b.appendChild(s1);b.appendChild(s2);b.setAttribute('data-a',it[1]);$k.appendChild(b);
+      });
+      return;
+    }
+    d.k.split('|').join(' ').split(' ').forEach(function(x){
+      if(!x)return;
+      var b=document.createElement('button');b.type='button';
+      if(x==='@sh'){b.textContent='⇧';b.setAttribute('aria-pressed',shift);b.className='toggle';b.setAttribute('data-a','@sh');}
+      else if(LBL[x]){b.textContent=LBL[x];b.className='lbl'+((x==='@calc'||x==='@frac')?' toggle':'');b.style.gridColumn='span '+(m>1?6:2);b.setAttribute('data-a',x);if(x==='@calc')b.setAttribute('aria-pressed',!$c.hidden);if(x==='@frac')b.setAttribute('aria-pressed',!$pf.hidden);}
+      else{b.textContent=(shift&&/^[a-zæøå]$/.test(x))?x.toUpperCase():x;b.setAttribute('data-a',x);}
+      if(m>1&&!b.style.gridColumn)b.style.gridColumn='span '+m;
+      $k.appendChild(b);
+    });
+  }
+  function tabs(){
+    $t.textContent='';
+    Object.keys(TABS).forEach(function(n){
+      var b=document.createElement('button');b.type='button';b.className='tab';b.textContent=n;
+      b.setAttribute('aria-pressed',n===tab);b.addEventListener('click',function(){tab=n;tabs();keys();});
+      $t.appendChild(b);
+    });
+    var wb=document.createElement('button');wb.type='button';wb.id='wipe';wb.className='tab';wb.setAttribute('data-a','@wipe');wb.textContent='Tøm arket';$t.appendChild(wb);
+    var gbt=document.createElement('button');gbt.type='button';gbt.id='gridbtn';gbt.className='tab';gbt.setAttribute('data-a','@grid');gbt.title='Skru rutenettet av eller på';$t.appendChild(gbt);applyGrid();
+  }
+  document.getElementById('kb').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-a]');if(b)act(b.getAttribute('data-a'));
+  });
+  $p.addEventListener('click',function(e){
+    var c=e.target.closest('.c');if(!c)return;
+    sel=null;refreshSel();cur.r=+c.dataset.r;cur.c=+c.dataset.c;render();
+  });
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){layout();render();},150);});
+  var ce='',lastE='',cd=false,$ce=document.getElementById('cexpr'),$cr=document.getElementById('cres'),$c=document.getElementById('calc'),$ct=document.getElementById('calctab');
+  function isO(x){return /^[+−×÷]$/.test(x);}
+  function ev(s){
+    var m=s.replace(/,/g,'.').match(/\d+\.?\d*|\.\d+|[+−×÷]/g)||[],a=[],i;
+    for(i=0;i<m.length;i++){
+      if(m[i]==='−'&&(i===0||isO(m[i-1]))&&m[i+1]&&!isO(m[i+1])){a.push(-parseFloat(m[++i]));}
+      else a.push(isO(m[i])?m[i]:parseFloat(m[i]));
+    }
+    if(!a.length||a.length%2===0)throw 0;
+    for(i=0;i<a.length;i++)if((i%2===0)===(typeof a[i]!=='number'))throw 0;
+    var o=[a[0]];
+    for(i=1;i<a.length;i+=2){var op=a[i],n=a[i+1];if(op==='×')o[o.length-1]*=n;else if(op==='÷')o[o.length-1]/=n;else o.push(op,n);}
+    var v=o[0];for(i=1;i<o.length;i+=2)v=o[i]==='+'?v+o[i+1]:v-o[i+1];
+    return v;
+  }
+  function cf(v){if(!isFinite(v))return null;return String(+v.toPrecision(12)).replace('.',',').replace('-','−');}
+  function cshow(){
+    $ce.textContent=ce;
+    if(!ce){$cr.textContent='0';return;}
+    try{var r=cf(ev(ce));$cr.textContent=r===null?'Feil':r;}catch(e){}
+  }
+  function insertCalc(){
+    var s=cd?(lastE||ce):ce;if(!s)return;
+    var r;try{r=cf(ev(s));}catch(x){return;}
+    if(r===null)return;
+    var i,j,k,rw,cl;
+    function setc(a,b,ch){var o=rows[a][b];if(!o){o=rows[a][b]={c:'',s:false};}o.c=ch;}
+    if(/^\d[\d,]*([+−]\d[\d,]*)+$/.test(s)&&/^[\d,]+$/.test(r)){
+      var nums=s.split(/[+−]/),ops=s.match(/[+−]/g),all=nums.concat([r]),n=nums.length,mi=0,mf=0;
+      all.forEach(function(x){var p=x.split(',');mi=Math.max(mi,p[0].length);mf=Math.max(mf,(p[1]||'').length);});
+      var sh=0;all.forEach(function(x,i){if(i>=1&&i<n&&x.split(',')[0].length===mi)sh=1;});
+      var w=sh+mi+(mf?1+mf:0);
+      if(w<=COLS){
+        var sc=Math.min(cur.c,COLS-w);
+        for(i=0;i<=n;i++)for(j=0;j<w;j++)put(cur.r+i,sc+j,i>=n-1?{c:'',s:false,u:true}:null);
+        for(i=0;i<=n;i++){
+          var x=all[i],off=sh+mi-x.split(',')[0].length;
+          for(k=0;k<x.length;k++)setc(cur.r+i,sc+off+k,x[k]);
+          if(i>=1&&i<n)setc(cur.r+i,sc+off-1,ops[i-1]);
+        }
+        cur.r+=n+2;cur.c=sc;return;
+      }
+    }
+    var op=/[+−×÷]/.test(s),txt=op?s+'='+r:r;
+    if(cur.c+txt.length>COLS&&txt.length<=COLS){cur.r++;cur.c=0;}
+    rw=cur.r;cl=cur.c;
+    for(k=0;k<txt.length;k++){
+      if(cl>=COLS){cl=0;rw++;}
+      put(rw,cl,{c:txt[k],s:false,u:op&&k>=txt.length-r.length});cl++;
+    }
+    cur.r=rw+2;cur.c=0;
+  }
+  var ck=document.getElementById('ckeys');
+  [['C','C'],['⌫','BS'],['÷','÷'],['×','×'],['7','7'],['8','8'],['9','9'],['−','−'],['4','4'],['5','5'],['6','6'],['+','+'],['1','1'],['2','2'],['3','3'],['=','EQ'],['0','0'],[',',','],['Sett inn','INS']].forEach(function(k){
+    var b=document.createElement('button');b.type='button';b.textContent=k[0];b.setAttribute('data-k',k[1]);
+    if(k[1]==='EQ')b.className='eq';if(k[1]==='INS'){b.className='ins';b.title='Skriv hele regnestykket inn på arket';}
+    ck.appendChild(b);
+  });
+  $c.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-k]');if(!b)return;var v=b.getAttribute('data-k');
+    if(v==='CLOSE'){toggleCalc(false);return;}
+    else if(v==='C'){ce='';cd=false;}
+    else if(v==='BS'){ce=cd?'':ce.slice(0,-1);cd=false;}
+    else if(v==='EQ'){try{var r=cf(ev(ce));if(r===null)throw 0;if(/[+×÷]|.−/.test(ce))lastE=ce;ce=r;cd=true;}catch(x){$cr.textContent='Feil';return;}}
+    else if(v==='INS'){snap();insertCalc();render();return;}
+    else if(isO(v)){cd=false;if(isO(ce.slice(-1))&&v!=='−')ce=ce.slice(0,-1);ce+=v;}
+    else{if(cd){ce='';cd=false;}ce+=v;}
+    cshow();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest&&e.target.closest('#mh,#sbar,.tbt'))return;if($c.hidden||e.ctrlKey||e.metaKey||e.altKey)return;
+    var k=e.key,m={'.':',',',':',','-':'−','*':'×','x':'×','X':'×','/':'÷','=':'EQ','Enter':'EQ','Backspace':'BS','Escape':'C','Delete':'C','c':'C','C':'C'};
+    var v=/^[0-9+]$/.test(k)?k:(Object.prototype.hasOwnProperty.call(m,k)?m[k]:null);
+    if(!v)return;
+    var b=ck.querySelector('[data-k="'+v+'"]');if(!b)return;
+    e.preventDefault();b.click();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest&&e.target.closest('#mh,#sbar,.tbt'))return;if(!$c.hidden||e.metaKey||(e.ctrlKey&&!e.altKey))return;
+    var k=e.key,h=true;
+    if(k==='Backspace'){if(cur.c>0||cur.r>0)act('@l');act('@bs');}
+    else if(k==='Delete')act('@bs');
+    else if(k==='Enter')act('@en');
+    else if(k===' ')act('@sp');
+    else if(k==='ArrowLeft')act('@l');
+    else if(k==='ArrowRight')act('@r');
+    else if(k==='ArrowUp')act('@u');
+    else if(k==='ArrowDown')act('@d');
+    else if(k==='Escape'){if(sup)act('@sup');}
+    else if(k==='^')act('@sup');
+    else if(k.length===1)act(k==='-'?'−':(k==='*'?'×':k));
+    else h=false;
+    if(h)e.preventDefault();
+  });
+  function toggleCalc(open){
+    if(open===undefined)open=$c.hidden;
+    $c.hidden=!open;
+    var b=document.querySelector('[data-a="@calc"]');if(b)b.setAttribute('aria-pressed',open?'true':'false');
+  }
+  var grip=document.getElementById('grip'),kbb=document.getElementById('kbbody'),rs0=document.documentElement.style,kh=54,H30=0,HM=1,ph=0,tg=0,lastH=0,raf=0;
+  var LERP=(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)?1:.35;
+  function meas(){
+    var h0=kbb.style.height,o0=kbb.style.overflow,k=rs0.getPropertyValue('--kh')||(kh+'px');
+    kbb.style.height='';kbb.style.overflow='';
+    rs0.setProperty('--kh','30px');H30=kbb.offsetHeight;
+    rs0.setProperty('--kh','96px');HM=Math.max(kbb.offsetHeight,H30+1);
+    rs0.setProperty('--kh',k);kbb.style.height=h0;kbb.style.overflow=o0;
+    ph=h0?parseFloat(h0):H30+(kh-30)/66*(HM-H30);
+  }
+  function setPh(h){
+    ph=Math.max(0,Math.min(HM,h));
+    if(ph>=H30){kh=30+(ph-H30)/(HM-H30)*66;kbb.style.height='';kbb.style.overflow='';}
+    else{kh=30;kbb.style.height=ph+'px';kbb.style.overflow='hidden';}
+    rs0.setProperty('--kh',kh.toFixed(2)+'px');
+  }
+  function step(){raf=0;var d=tg-ph;if(Math.abs(d)<.6){setPh(tg);return;}setPh(ph+d*LERP);raf=requestAnimationFrame(step);}
+  function go(t){tg=Math.max(0,Math.min(HM,t));if(!raf)raf=requestAnimationFrame(step);}
+  grip.addEventListener('pointerdown',function(e){
+    grip.setPointerCapture(e.pointerId);meas();
+    var y0=e.clientY,p0=ph,mvd=0;
+    function mv(ev){var dy=y0-ev.clientY;mvd=Math.max(mvd,Math.abs(dy));go(p0+dy);}
+    function up(){
+      grip.removeEventListener('pointermove',mv);grip.removeEventListener('pointerup',up);grip.removeEventListener('pointercancel',up);
+      if(mvd<5){if(ph>8){lastH=ph;go(0);}else go(lastH>H30?lastH:H30+(54-30)/66*(HM-H30));}
+      else if(tg<H30*.2)go(0);
+    }
+    grip.addEventListener('pointermove',mv);grip.addEventListener('pointerup',up);grip.addEventListener('pointercancel',up);
+  });
+  var $pc=document.getElementById('pcol'),$pf=document.getElementById('pfra'),$tc=document.getElementById('tcol');
+  function panel(w){
+    var oc=w==='c'&&$pc.hidden,of=w==='f'&&$pf.hidden,og=w==='g'&&document.getElementById('pgraf').hidden,od=w==='d'&&document.getElementById('pdraw').hidden;
+    $pc.hidden=!oc;$pf.hidden=!of;document.getElementById('pgraf').hidden=!og;document.getElementById('tgraf').setAttribute('aria-pressed',og?'true':'false');
+    document.getElementById('pdraw').hidden=!od;document.getElementById('tdraw').setAttribute('aria-pressed',od?'true':'false');$p.classList.toggle('drawing',od);$p.classList.toggle('texting',od&&PEN.tool==='tx');if(!od&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.tbt'))document.activeElement.blur();
+    $tc.setAttribute('aria-pressed',oc?'true':'false');var fb=document.querySelector('[data-a="@frac"]');if(fb)fb.setAttribute('aria-pressed',of?'true':'false');
+  }
+  $tc.addEventListener('click',function(){panel('c');wheelMark();});
+  [$pc,$pf,document.getElementById('pgraf'),document.getElementById('pdraw')].forEach(function(p){p.addEventListener('click',function(e){if(e.target.closest('[data-p="CLOSE"]'))panel('');});});
+
+  var COLORS=[['Grønn','#3fae7a'],['Lime','#8ab61a'],['Mint','#35c9a0'],['Turkis','#14b8c4'],['Himmelblå','#38a3e8'],['Blå','#2f6fd6'],['Marineblå','#3b4fb5'],['Indigo','#5b5bd6'],['Lilla','#8e5bd6'],['Fiolett','#b24fd6'],['Rosa','#e05fb0'],['Lys rød','#e0476f'],['Rød','#d9433b'],['Korall','#f2735a'],['Oransje','#f08a24'],['Gul','#e8b923'],['Sennep','#c9a227'],['Oliven','#8a9a2b'],['Brun','#a0693b'],['Rust','#b5532e'],['Vin','#9c2f4f'],['Skifer','#5f7d95'],['Stål','#7a8a99'],['Grafitt','#6b7280'],['Sand','#b8a07a']];
+  var tm={i:0,l:false,h:null,s:50},sw=document.getElementById('sw'),tmode=document.getElementById('tmode');
+  try{var sv=JSON.parse(localStorage.getItem('rp-theme')||'null');if(sv&&COLORS[sv.i]){tm.i=sv.i;tm.l=!!sv.l;if(sv.h!=null&&sv.s!=null){tm.h=sv.h;tm.s=sv.s;}}}catch(e){}
+  function hslOf(x){
+    var r=parseInt(x.slice(1,3),16)/255,g=parseInt(x.slice(3,5),16)/255,b=parseInt(x.slice(5,7),16)/255;
+    var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,h=0,s=0,d=mx-mn;
+    if(d){s=d/(1-Math.abs(2*l-1));if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h=Math.round(h*60);if(h<0)h+=360;}
+    return [h,Math.round(s*100)];
+  }
+  function applyTheme(){
+    var p=(tm.h!=null?[tm.h,tm.s]:hslOf(COLORS[tm.i][1])),h=p[0],s=Math.min(p[1],70),t,rs=document.documentElement.style,i;
+    function H(a,l){return 'hsl('+h+','+Math.round(a)+'%,'+l+'%)';}
+    if(tm.l){t={'--bg':H(s*.4,91),'--kb':H(s*.4,86),'--key':'#ffffff','--key-b':H(s*.35,68),'--key-h':H(s*.5,93),'--ink':H(40,14),'--muted':H(20,34),'--accent':H(s,38),'--accent-t':'#ffffff','--danger':'hsl(8,70%,90%)','--danger-t':'#8f2a1c'};}
+    else{t={'--bg':H(s*.55,12),'--kb':H(s*.5,17),'--key':H(s*.45,25),'--key-b':H(s*.4,38),'--key-h':H(s*.45,32),'--ink':H(30,93),'--muted':H(25,72),'--accent':H(s,55),'--accent-t':H(s,8),'--danger':'hsl(8,40%,24%)','--danger-t':'#ffb4aa'};}
+    t['--grid']=H(s*.5,88);t['--curbg']=H(s*.6,90);t['--curline']=H(s,32);t['--pborder']=H(s*.4,68);
+    Object.keys(t).forEach(function(k){rs.setProperty(k,t[k]);});
+    for(i=0;i<sw.children.length;i++)sw.children[i].setAttribute('aria-pressed',(i===tm.i&&tm.h==null)?'true':'false');
+    for(i=0;i<tmode.children.length;i++)tmode.children[i].setAttribute('aria-pressed',(tmode.children[i].getAttribute('data-m')==='l')===tm.l?'true':'false');
+    wheelMark();try{localStorage.setItem('rp-theme',JSON.stringify(tm));}catch(e){}
+  }
+  COLORS.forEach(function(c,i){
+    var b=document.createElement('button');b.type='button';b.style.background=c[1];b.title=c[0];b.setAttribute('aria-label',c[0]);b.setAttribute('data-i',i);sw.appendChild(b);
+  });
+  sw.addEventListener('click',function(e){var b=e.target.closest('button[data-i]');if(!b)return;tm.i=+b.getAttribute('data-i');tm.h=null;applyTheme();});
+  tmode.addEventListener('click',function(e){var b=e.target.closest('button[data-m]');if(!b)return;tm.l=b.getAttribute('data-m')==='l';applyTheme();});
+  var wh=document.getElementById('wheel'),wm=document.getElementById('wm');
+  function wheelMark(){
+    if(tm.h==null){wm.hidden=true;return;}
+    var R=wh.clientWidth/2,r=tm.s/70*R,a=tm.h*Math.PI/180;
+    wm.style.left=(R+r*Math.sin(a))+'px';wm.style.top=(R-r*Math.cos(a))+'px';wm.hidden=false;
+  }
+  function wpick(e){
+    var b=wh.getBoundingClientRect(),dx=e.clientX-(b.left+b.width/2),dy=e.clientY-(b.top+b.height/2),R=b.width/2-3,r=Math.min(1,Math.hypot(dx,dy)/R),a=Math.atan2(dx,-dy)*180/Math.PI;
+    if(a<0)a+=360;
+    tm.h=Math.round(a)%360;tm.s=Math.round(r*70);applyTheme();
+  }
+  wh.addEventListener('pointerdown',function(e){wh.setPointerCapture(e.pointerId);wpick(e);wh.onpointermove=wpick;});
+  wh.addEventListener('pointerup',function(){wh.onpointermove=null;});
+  wh.addEventListener('pointercancel',function(){wh.onpointermove=null;});
+  applyTheme();
+
+  var ftv={T:'',N:''},fsel='T',$ftt=document.getElementById('ftt'),$fnn=document.getElementById('fnn');
+  function fshow(){
+    [['T',$ftt],['N',$fnn]].forEach(function(p){p[1].querySelector('b').textContent=ftv[p[0]]||'?';p[1].setAttribute('aria-pressed',fsel===p[0]?'true':'false');});
+  }
+  function putFrac(n,d){snap();put(cur.r,cur.c,{c:'',s:false,f:[n,d]});adv();render();}
+  var fk=document.getElementById('fkeys');
+  ['7','8','9','⌫','4','5','6','C','1','2','3','0','Sett inn'].forEach(function(l){
+    var b=document.createElement('button');b.type='button';b.textContent=l;
+    var v=l==='⌫'?'BS':(l==='Sett inn'?'INS':l);b.setAttribute('data-f',v);if(v==='INS'){b.className='ins';b.title='Sett brøken inn på arket';}fk.appendChild(b);
+  });
+  var fq=document.getElementById('fq');
+  [['1','2'],['1','3'],['2','3'],['1','4'],['3','4'],['1','5'],['2','5'],['1','8']].forEach(function(p){
+    var b=document.createElement('button');b.type='button';b.setAttribute('data-q',p[0]+'/'+p[1]);b.title='Sett inn '+p[0]+'/'+p[1];
+    b.innerHTML='<span class="qn">'+p[0]+'</span><span class="qd">'+p[1]+'</span>';fq.appendChild(b);
+  });
+  $pf.addEventListener('click',function(e){
+    var q=e.target.closest('[data-q]');
+    if(q){var p=q.getAttribute('data-q').split('/');putFrac(p[0],p[1]);return;}
+    var b=e.target.closest('[data-f]');if(!b)return;var v=b.getAttribute('data-f');
+    if(v==='T'||v==='N'){fsel=v;}
+    else if(v==='BS'){ftv[fsel]=ftv[fsel].slice(0,-1);}
+    else if(v==='C'){ftv.T='';ftv.N='';fsel='T';}
+    else if(v==='INS'){if(!ftv.T||!ftv.N)return;putFrac(ftv.T,ftv.N);ftv.T='';ftv.N='';fsel='T';}
+    else if(ftv[fsel].length<3){ftv[fsel]+=v;}
+    fshow();
+  });
+  fshow();
+
+  document.getElementById('tgraf').addEventListener('click',function(){panel('g');});
+  document.getElementById('tdraw').addEventListener('click',function(){panel('d');});
+  document.getElementById('tundo').addEventListener('click',function(){act('@undo');});
+  var wd=document.getElementById('wipedlg');
+  function closeW(){sure=0;wd.hidden=true;}
+  document.getElementById('wipeno').addEventListener('click',closeW);
+  document.getElementById('wipeyes').addEventListener('click',function(){act('@wipe');});
+  wd.addEventListener('click',function(e){if(e.target===wd)closeW();});
+  document.addEventListener('keydown',function(e){if(wd.hidden)return;if(e.key==='Escape')closeW();e.stopPropagation();},true);
+  document.getElementById('tsize').addEventListener('click',function(){
+    var SZ=[20,26,34,44,56,68],NM=['bitteliten','minst','middels','stor','større','størst'],i=(SZ.indexOf(CS)+1)%SZ.length;
+    CS=SZ[i];this.textContent='Ruter: '+NM[i];
+    try{localStorage.setItem('rp-cs',String(CS));}catch(e){}
+    layout();render();
+  });
+  (function(){var i=[20,26,34,44,56,68].indexOf(CS);if(i>-1)document.getElementById('tsize').textContent='Ruter: '+['bitteliten','minst','middels','stor','større','størst'][i];})();
+  document.getElementById('tsave').addEventListener('click',function(){saveImg();});
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest&&e.target.closest('#mh,#sbar,.tbt'))return;if(!$c.hidden||e.altKey||e.shiftKey||!(e.ctrlKey||e.metaKey))return;
+    if(e.key==='z'||e.key==='Z'){e.preventDefault();act('@undo');}
+  });
+
+  function deliver(b){
+    var name='rutepapir.png';
+    function plain(){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);}
+    if(window.claude&&window.claude.use){
+      window.claude.use('downloads').then(function(d){
+        if(d){d.save({filename:name,data:b}).catch(function(){});}else plain();
+      },function(){plain();});
+    }else plain();
+  }
+  function saveImg(opt){
+    var S=34,sc=3,last=-1,r,c,x;
+    for(r=0;r<rows.length;r++){var rw=rows[r]||[];for(c=0;c<rw.length;c++){x=rw[c];if(x&&(x.c||x.f||x.u)){last=r;break;}}}
+    var R=Math.max(8,last+2,Math.max(Math.ceil(objBottom()),Math.ceil(inkBottom()),Math.ceil(textBottom()))+1);var H=opt&&(opt.name||opt.msg)?(opt.msg?66:42):0;
+    var cs=getComputedStyle(document.documentElement);
+    var gc=cs.getPropertyValue('--grid').trim()||'#cfe5d8',bc=cs.getPropertyValue('--pborder').trim()||'#8fb9a3',ink='#10202e';
+    var F='"Patrick Hand",system-ui,sans-serif';
+    function go(){
+      var cv=document.createElement('canvas');cv.width=COLS*S*sc;cv.height=(R*S+H)*sc;
+      var g=cv.getContext('2d');g.scale(sc,sc);
+      g.fillStyle='#fff';g.fillRect(0,0,COLS*S,R*S+H);if(H){g.fillStyle=ink;g.textAlign='left';g.textBaseline='middle';g.font='22px '+F;g.fillText((opt.name||'')+(opt.name?'  ·  ':'')+opt.date,12,21,COLS*S-24);if(opt.msg){g.font='17px '+F;g.fillText(opt.msg,12,48,COLS*S-24);}g.fillStyle=bc;g.fillRect(0,H-1,COLS*S,1);}g.translate(0,H);
+      g.fillStyle=gc;
+      if(gridOn)for(r=0;r<R;r++)for(c=0;c<COLS;c++){g.fillRect(c*S+S-1,r*S,1,S);g.fillRect(c*S,r*S+S-1,S,1);}
+      g.fillStyle=ink;
+      for(r=0;r<R;r++)for(c=0;c<COLS;c++){
+        var cell=rows[r]&&rows[r][c];if(!cell)continue;
+        var px=c*S,py=r*S;
+        if(cell.u)g.fillRect(px,py+S-2,S,2);
+        if(cell.f){
+          g.font='14px '+F;g.textAlign='center';g.textBaseline='middle';
+          g.fillText(cell.f[0],px+16.5,py+8);g.fillRect(px+3,py+15.5,27,2);g.fillText(cell.f[1],px+16.5,py+25);
+        }else if(cell.c){
+          if(cell.s){g.font='16px '+F;g.textAlign='left';g.textBaseline='top';g.fillText(cell.c,px+16.5,py+2);}
+          else if(cell.e){
+            g.font='25px '+F;g.textAlign='left';g.textBaseline='middle';g.fillText(cell.c,px+5,py+17);
+            g.font='14px '+F;g.textAlign='right';g.textBaseline='top';g.fillText(cell.e,px+30,py+3);
+          }else{g.font='25px '+F;g.textAlign='center';g.textBaseline='middle';g.fillText(cell.c,px+16.5,py+17);}
+        }
+      }
+      g.strokeStyle=bc;g.lineWidth=1;g.strokeRect(.5,.5,COLS*S-1,R*S-1);
+      g.lineCap='round';g.lineJoin='round';
+      inks.forEach(function(k){var q=k.p,m;g.strokeStyle=k.c;g.lineWidth=k.w;g.beginPath();g.moveTo(q[0][0]*S,q[0][1]*S);if(q.length===1)g.lineTo(q[0][0]*S+.01,q[0][1]*S);for(m=1;m<q.length;m++)g.lineTo(q[m][0]*S,q[m][1]*S);g.stroke();});
+      texts.forEach(function(o){
+        var ln=(o.t||'').split('\n'),m;g.fillStyle=o.c;g.font=o.fs+'px '+F;g.textAlign='left';g.textBaseline='top';
+        for(m=0;m<ln.length;m++)g.fillText(ln[m],o.x*S+4,o.y*S+2+m*o.fs*1.15);
+      });
+      drawObjsCanvas(g,S,function(){cv.toBlob(function(b){if(b){if(opt&&opt.cb)opt.cb(b);else deliver(b);}},'image/png');});
+    }
+    var fl=(document.fonts&&document.fonts.load)?document.fonts.load('25px "Patrick Hand"'):Promise.resolve();
+    fl.then(go,go);
+  }
+
+  /* ===== Tegneverktøy ===== */
+  var PEN={tool:'pen',col:'#10202e',w:4,fs:25,live:null,el:null,down:false},TXSEL=null;
+  var PCOL=['#10202e','#d9433b','#f08a24','#e8b800','#2e9e5b','#2f6fd6','#8e5bd6','#e05fb0','#8a5a3a','#8a99a6'];
+  function inkD(k,S){
+    var q=k.p,d='M'+(q[0][0]*S).toFixed(1)+' '+(q[0][1]*S).toFixed(1),m;
+    if(q.length===1)d+=' l0.01 0';
+    for(m=1;m<q.length;m++)d+=' L'+(q[m][0]*S).toFixed(1)+' '+(q[m][1]*S).toFixed(1);
+    return d;
+  }
+  function inkPath(k){return '<path d="'+inkD(k,CS)+'" fill="none" stroke="'+k.c+'" stroke-width="'+(k.w*CS/34).toFixed(2)+'" stroke-linecap="round" stroke-linejoin="round"/>';}
+  function inkBottom(){var m=0;inks.forEach(function(k){k.p.forEach(function(q){if(q[1]>m)m=q[1];});});return m;}
+  function drawInk(){
+    var old=$p.querySelector('.ink');if(old)old.remove();
+    var W=COLS*CS,H=ROWS*CS,sv=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    sv.setAttribute('class','ink');sv.setAttribute('width',W);sv.setAttribute('height',H);sv.setAttribute('viewBox','0 0 '+W+' '+H);
+    var h='';inks.forEach(function(k){h+=inkPath(k);});
+    sv.innerHTML=h;$p.appendChild(sv);
+  }
+  function inkPt(e){var r=$p.querySelector('.ink').getBoundingClientRect();return [+((e.clientX-r.left)/CS).toFixed(3),+((e.clientY-r.top)/CS).toFixed(3)];}
+  function segDist(px,py,a,b){
+    var dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy,t=l?((px-a[0])*dx+(py-a[1])*dy)/l:0;
+    t=Math.max(0,Math.min(1,t));var x=a[0]+t*dx-px,y=a[1]+t*dy-py;return Math.sqrt(x*x+y*y);
+  }
+  function eraseAt(pt){
+    var rad=.5,n=inks.length;
+    inks=inks.filter(function(k){
+      var q=k.p,m,rr=rad+k.w/68;
+      if(q.length===1)return Math.sqrt(Math.pow(q[0][0]-pt[0],2)+Math.pow(q[0][1]-pt[1],2))>rr;
+      for(m=1;m<q.length;m++)if(segDist(pt[0],pt[1],q[m-1],q[m])<=rr)return false;
+      return true;
+    });
+    if(inks.length!==n)drawInk();
+  }
+  $p.addEventListener('pointerdown',function(e){
+    if(!$p.classList.contains('drawing')||!e.target.closest||!e.target.closest('.ink'))return;
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    e.preventDefault();
+    if(PEN.tool==='tx'){newText(inkPt(e));return;}
+    snap();PEN.down=true;
+    try{$p.setPointerCapture(e.pointerId);}catch(x){}
+    var pt=inkPt(e);
+    if(PEN.tool==='er'){eraseAt(pt);return;}
+    PEN.live={c:PEN.col,w:PEN.w,p:[pt]};inks.push(PEN.live);
+    var sv=$p.querySelector('.ink');sv.insertAdjacentHTML('beforeend',inkPath(PEN.live));PEN.el=sv.lastChild;
+  });
+  $p.addEventListener('pointermove',function(e){
+    if(!PEN.down)return;
+    var pt=inkPt(e);
+    if(PEN.tool==='er'){eraseAt(pt);return;}
+    var q=PEN.live.p,l=q[q.length-1];
+    if(Math.abs(pt[0]-l[0])+Math.abs(pt[1]-l[1])<.03)return;
+    q.push(pt);PEN.el.setAttribute('d',inkD(PEN.live,CS));
+  });
+  function penUp(){if(!PEN.down)return;PEN.down=false;PEN.live=null;PEN.el=null;saveAll();}
+  $p.addEventListener('pointerup',penUp);$p.addEventListener('pointercancel',penUp);
+  (function(){
+    var $dc=document.getElementById('dcol'),h='';
+    PCOL.forEach(function(c){h+='<button type="button" data-c="'+c+'" style="background:'+c+'" aria-label="Farge '+c+'" class="'+(c===PEN.col?'on':'')+'"></button>';});
+    $dc.innerHTML=h;
+    $dc.addEventListener('click',function(e){var b=e.target.closest('button[data-c]');if(!b)return;PEN.col=b.dataset.c;if(PEN.tool==='er')PEN.tool='pen';var to=PEN.tool==='tx'&&byTx(TXSEL);if(to){snap();to.c=PEN.col;var te=$p.querySelector('.tb[data-id="'+to.id+'"]');if(te)setTb(te,to);saveAll();}sync();});
+    document.getElementById('dtool').addEventListener('click',function(e){var b=e.target.closest('button[data-t]');if(!b)return;PEN.tool=b.dataset.t;sync();});
+    document.getElementById('dfs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;PEN.fs=+b.dataset.f;var to=byTx(TXSEL);if(PEN.tool==='tx'&&to){snap();to.fs=PEN.fs;var te=$p.querySelector('.tb[data-id="'+to.id+'"]');if(te)setTb(te,to);saveAll();}sync();});
+    document.getElementById('dw').addEventListener('click',function(e){var b=e.target.closest('button[data-w]');if(!b)return;PEN.w=+b.dataset.w;sync();});
+    document.getElementById('dclr').addEventListener('click',function(){if(!inks.length)return;snap();inks=[];drawInk();saveAll();});
+    function sync(){
+      [].forEach.call(document.querySelectorAll('#dtool button'),function(b){b.setAttribute('aria-pressed',b.dataset.t===PEN.tool?'true':'false');});
+      [].forEach.call(document.querySelectorAll('#dfs button'),function(b){b.setAttribute('aria-pressed',+b.dataset.f===PEN.fs?'true':'false');});
+      $p.classList.toggle('texting',PEN.tool==='tx'&&$p.classList.contains('drawing'));
+      [].forEach.call(document.querySelectorAll('#dw button'),function(b){b.setAttribute('aria-pressed',+b.dataset.w===PEN.w?'true':'false');});
+      [].forEach.call($dc.querySelectorAll('button'),function(b){b.classList.toggle('on',PEN.tool!=='er'&&b.dataset.c===PEN.col);});
+    }
+  })();
+
+  /* ===== Tekstbokser ===== */
+  var txSnapped=false;
+  function textBottom(){var m=0;texts.forEach(function(o){var n=(o.t||'').split('\n').length;m=Math.max(m,o.y+(n*o.fs*1.15+6)/34);});return m;}
+  function byTx(id){for(var i=0;i<texts.length;i++)if(texts[i].id===id)return texts[i];return null;}
+  function mkTb(o){
+    var d=document.createElement('div');d.className='tb';d.dataset.id=o.id;
+    d.innerHTML='<div class="tbh"><span class="tbm" title="Flytt">✥</span><span class="tbd" title="Slett tekstboksen">✕</span></div><div class="tbt" contenteditable="true" spellcheck="false"></div>';
+    d.querySelector('.tbt').textContent=o.t||'';
+    setTb(d,o);return d;
+  }
+  function setTb(d,o){d.style.left=(o.x*CS)+'px';d.style.top=(o.y*CS)+'px';d.style.fontSize=(o.fs*CS/34)+'px';d.style.color=o.c;}
+  function drawTexts(){
+    var old=$p.querySelector('.tbl');if(old)old.remove();
+    var l=document.createElement('div');l.className='tbl';
+    texts.forEach(function(o){l.appendChild(mkTb(o));});
+    $p.appendChild(l);
+  }
+  function newText(pt){
+    snap();
+    var o={id:Date.now()+Math.floor(Math.random()*1000),x:Math.max(0,Math.min(pt[0],COLS-1)),y:Math.max(0,pt[1]-.4),t:'',fs:PEN.fs,c:PEN.col};
+    texts.push(o);
+    var l=$p.querySelector('.tbl'),d=mkTb(o);l.appendChild(d);
+    setTimeout(function(){var t=d.querySelector('.tbt');t.focus();},0);
+  }
+  $p.addEventListener('input',function(e){
+    var t=e.target.closest&&e.target.closest('.tbt');if(!t)return;
+    var o=byTx(+t.parentNode.dataset.id);if(!o)return;
+    if(!txSnapped){snap();txSnapped=true;}
+    o.t=t.innerText.replace(/\n$/,'');saveAll();
+  });
+  $p.addEventListener('focusin',function(e){
+    var t=e.target.closest&&e.target.closest('.tbt');if(!t)return;
+    txSnapped=false;TXSEL=+t.parentNode.dataset.id;
+  });
+  $p.addEventListener('focusout',function(e){
+    var t=e.target.closest&&e.target.closest('.tbt');if(!t)return;
+    var d=t.parentNode,o=byTx(+d.dataset.id);
+    setTimeout(function(){
+      if(d.contains(document.activeElement))return;
+      if(o&&!(o.t||'').trim()){texts=texts.filter(function(x){return x!==o;});d.remove();saveAll();}
+    },150);
+  });
+  $p.addEventListener('pointerdown',function(e){
+    var h=e.target.closest&&e.target.closest('.tbh span');if(!h)return;
+    var d=h.closest('.tb'),o=byTx(+d.dataset.id);if(!o)return;
+    e.preventDefault();
+    if(h.classList.contains('tbd')){snap();texts=texts.filter(function(x){return x!==o;});d.remove();saveAll();return;}
+    snap();var sx=e.clientX,sy=e.clientY,ox=o.x,oy=o.y;
+    try{h.setPointerCapture(e.pointerId);}catch(x){}
+    function mv(ev){
+      o.x=Math.max(0,Math.min(ox+(ev.clientX-sx)/CS,COLS-1));o.y=Math.max(0,oy+(ev.clientY-sy)/CS);setTb(d,o);
+    }
+    function up(){h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);h.removeEventListener('pointercancel',up);saveAll();}
+    h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);
+  });
+  $p.addEventListener('mousedown',function(e){if(e.target.closest&&e.target.closest('.tbh'))e.preventDefault();});
+  function applyGrid(){
+    $p.classList.toggle('nogrid',!gridOn);
+    var b=document.getElementById('gridbtn');
+    if(b){b.setAttribute('aria-pressed',gridOn?'true':'false');b.textContent=gridOn?'Rutenett: på':'Rutenett: av';}
+  }
+
+  /* ===== Grafer og figurer: popup-panel, dra ut på arket ===== */
+  var oid=Date.now(),$pg=document.getElementById('pgraf'),$gs=document.getElementById('gsel'),$pal=document.getElementById('gpal');
+  var C1='#d9433b',C2='#2f6fd6';
+  var TY={
+    axes:{name:'Koordinatsystem',kind:'xy',vx0:-6,vx1:6,vy0:-6,vy1:6,ls:1,P:[],p:{}},
+    line:{name:'Rett linje',kind:'xy',vx0:-6,vx1:6,vy0:-6,vy1:6,ls:1,p:{a:2,b:1},P:[['a','a',-5,5,.5],['b','b',-5,5,1]]},
+    para:{name:'Parabel',kind:'xy',vx0:-6,vx1:6,vy0:-6,vy1:6,ls:1,p:{a:1,c:-4},P:[['a','a',-3,3,.5],['c','c',-5,5,1]]},
+    expo:{name:'Eksponentiell',kind:'xy',vx0:-3,vx1:5,vy0:-1,vy1:9,ls:1,p:{a:1,b:2},P:[['a','a',.5,5,.5],['b','b',.5,4,.5]]},
+    sys:{name:'Likningssett',kind:'xy',vx0:-3,vx1:7,vy0:-3,vy1:7,ls:1,p:{a1:1,b1:1,a2:-1,b2:5},P:[['a1','a₁',-5,5,.5],['b1','b₁',-6,6,1],['a2','a₂',-5,5,.5],['b2','b₂',-6,6,1]]},
+    numline:{name:'Tallinje',kind:'nl',vx0:-6,vx1:6,vy0:-1,vy1:1,P:[],p:{}},
+    rect:{name:'Rektangel',kind:'fig',vx0:0,vx1:6,vy0:0,vy1:4,P:[],p:{}},
+    tri:{name:'Trekant',kind:'fig',vx0:0,vx1:6,vy0:0,vy1:5,P:[],p:{}},
+    circ:{name:'Sirkel',kind:'fig',vx0:0,vx1:5,vy0:0,vy1:5,P:[],p:{}}
+  };
+  var ORDER=['axes','line','para','expo','sys','numline','rect','tri','circ'];
+  function nf(n){n=Math.round(n*100)/100;return String(n).replace('.',',').replace('-','−');}
+  function view(o){var T=TY[o.t];return o.v||{x0:T.vx0,x1:T.vx1,y0:T.vy0,y1:T.vy1};}
+  function VW(o){var V=view(o);return V.x1-V.x0;}
+  function dims(o){var V=view(o);return {w:(V.x1-V.x0)*o.u,h:(V.y1-V.y0)*o.u};}
+  function byId(id){for(var i=0;i<objs.length;i++)if(objs[i].id===id)return objs[i];return null;}
+  function objBottom(){var m=0;objs.forEach(function(o){m=Math.max(m,o.y+dims(o).h);});return m;}
+  function objSvg(o,CSp,thumb){
+    var T=TY[o.t],V=view(o),up=CSp*o.u,W=+((V.x1-V.x0)*up).toFixed(2),Hh=+((V.y1-V.y0)*up).toFixed(2),id='k'+o.id,ink='#10202e',p=o.p||{};
+    var fs=Math.max(9,Math.min(16,up*.42)),i;
+    function X(x){return +((x-V.x0)*up).toFixed(2);}
+    function Y(y){return +((V.y1-y)*up).toFixed(2);}
+    function txt(x,y,t,anc,col,b){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anc||'start')+'"'+(col?' fill="'+col+'"':'')+(b?' font-weight="bold"':'')+'>'+t+'</text>';}
+    function sup(t,rest){return '<tspan dy="'+(-fs*.4).toFixed(1)+'" font-size="'+(fs*.75).toFixed(1)+'">'+t+'</tspan><tspan dy="'+(fs*.4).toFixed(1)+'">'+(rest||'')+'</tspan>';}
+    function lineStr(a,b){if(a===0)return nf(b);var s=(a===1?'':a===-1?'−':nf(a))+'x';if(b>0)s+=' + '+nf(b);else if(b<0)s+=' − '+nf(-b);return s;}
+    function path(f,col){
+      var d='',n=240,x,y,py;
+      for(var k=0;k<=n;k++){x=V.x0+(V.x1-V.x0)*k/n;y=f(x);if(!isFinite(y))continue;py=Math.max(-3000,Math.min(3000,Y(y)));d+=(d?'L':'M')+X(x)+' '+py.toFixed(1);}
+      return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+(thumb?1.6:2.6)+'" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#'+id+')"/>';
+    }
+    function lbl(list){var r='';list.forEach(function(q,k){r+=txt(W-6,(fs+4+k*(fs+5)).toFixed(1),q[0],'end',q[1],true);});return r;}
+    function axesSvg(){
+      var ox=X(0),oy=Y(0),ls=T.ls*(up<18?2:1),a='<g stroke="'+ink+'" stroke-width="1.7" stroke-linecap="round">';
+      a+='<line x1="0" y1="'+oy+'" x2="'+(W-2)+'" y2="'+oy+'"/><line x1="'+ox+'" y1="'+Hh+'" x2="'+ox+'" y2="2"/>';
+      for(i=Math.ceil(V.x0+.5);i<=Math.floor(V.x1-.5);i++){if(i)a+='<line x1="'+X(i)+'" y1="'+(oy-4)+'" x2="'+X(i)+'" y2="'+(oy+4)+'"/>';}
+      for(i=Math.ceil(V.y0+.5);i<=Math.floor(V.y1-.5);i++){if(i)a+='<line x1="'+(ox-4)+'" y1="'+Y(i)+'" x2="'+(ox+4)+'" y2="'+Y(i)+'"/>';}
+      a+='</g><polygon points="'+W+','+oy+' '+(W-9)+','+(oy-4.5)+' '+(W-9)+','+(oy+4.5)+'"/><polygon points="'+ox+',0 '+(ox-4.5)+',9 '+(ox+4.5)+',9"/>';
+      if(!thumb){
+        for(i=Math.ceil(V.x0+.5);i<=Math.floor(V.x1-.5);i++){if(i&&i%ls===0)a+=txt(X(i),(oy+fs+6).toFixed(1),nf(i),'middle');}
+        for(i=Math.ceil(V.y0+.5);i<=Math.floor(V.y1-.5);i++){if(i&&i%ls===0)a+=txt(ox-7,(Y(i)+fs*.35).toFixed(1),nf(i),'end');}
+        a+=txt(ox-6,(oy+fs+5).toFixed(1),'0','end')+txt(W-4,oy-9,'x','end')+txt(ox+9,fs+2,'y','start');
+      }
+      return a;
+    }
+    var s='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+Hh+'" viewBox="0 0 '+W+' '+Hh+'" font-family="sans-serif" font-size="'+fs.toFixed(1)+'" fill="'+ink+'"><defs><clipPath id="'+id+'"><rect x="0" y="0" width="'+W+'" height="'+Hh+'"/></clipPath></defs>';
+    if(T.kind==='xy'){
+      s+=axesSvg();
+      if(o.t==='line'){s+=path(function(x){return p.a*x+p.b;},C1);if(!thumb)s+=lbl([['y = '+lineStr(p.a,p.b),C1]]);}
+      else if(o.t==='para'){s+=path(function(x){return p.a*x*x+p.c;},C1);if(!thumb)s+=lbl([['y = '+(p.a===1?'':p.a===-1?'−':nf(p.a))+'x'+sup('2',p.c>0?' + '+nf(p.c):p.c<0?' − '+nf(-p.c):''),C1]]);}
+      else if(o.t==='expo'){s+=path(function(x){return p.a*Math.pow(p.b,x);},C1);if(!thumb)s+=lbl([['y = '+nf(p.a)+' · '+nf(p.b)+sup('x',''),C1]]);}
+      else if(o.t==='sys'){
+        s+=path(function(x){return p.a1*x+p.b1;},C1)+path(function(x){return p.a2*x+p.b2;},C2);
+        if(!thumb)s+=lbl([['y = '+lineStr(p.a1,p.b1),C1],['y = '+lineStr(p.a2,p.b2),C2]]);
+        if(p.a1!==p.a2){
+          var xi=(p.b2-p.b1)/(p.a1-p.a2),yi=p.a1*xi+p.b1;
+          if(xi>V.x0&&xi<V.x1&&yi>V.y0&&yi<V.y1){
+            s+='<circle cx="'+X(xi)+'" cy="'+Y(yi)+'" r="'+(thumb?2.5:5)+'" fill="#fff" stroke="'+ink+'" stroke-width="2"/>';
+            if(!thumb)s+=txt((X(xi)+9).toFixed(1),(Y(yi)-9).toFixed(1),'('+nf(xi)+', '+nf(yi)+')','start',ink,true);
+          }
+        }
+      }
+    }else if(T.kind==='nl'){
+      var oy=Y(0);
+      s+='<g stroke="'+ink+'" stroke-width="1.7" stroke-linecap="round"><line x1="2" y1="'+oy+'" x2="'+(W-2)+'" y2="'+oy+'"/>';
+      for(i=Math.ceil(V.x0+.5);i<=Math.floor(V.x1-.5);i++)s+='<line x1="'+X(i)+'" y1="'+(oy-5)+'" x2="'+X(i)+'" y2="'+(oy+5)+'"/>';
+      s+='</g><polygon points="'+W+','+oy+' '+(W-9)+','+(oy-4.5)+' '+(W-9)+','+(oy+4.5)+'"/><polygon points="0,'+oy+' 9,'+(oy-4.5)+' 9,'+(oy+4.5)+'"/>';
+      if(!thumb)for(i=Math.ceil(V.x0+.5);i<=Math.floor(V.x1-.5);i++)s+=txt(X(i),(oy+fs+8).toFixed(1),nf(i),'middle');
+    }else if(o.t==='rect'){
+      s+='<rect x="3" y="3" width="'+(W-6)+'" height="'+(Hh-6)+'" fill="none" stroke="'+ink+'" stroke-width="2.4"/>';
+      if(!thumb)s+=txt(W/2,Hh-9,'lengde','middle')+txt(9,Hh/2,'bredde','start');
+    }else if(o.t==='tri'){
+      s+='<polygon points="3,'+(Hh-3)+' '+(W-3)+','+(Hh-3)+' 3,3" fill="none" stroke="'+ink+'" stroke-width="2.4" stroke-linejoin="round"/><path d="M3 '+(Hh-14)+' L14 '+(Hh-14)+' L14 '+(Hh-3)+'" fill="none" stroke="'+ink+'" stroke-width="1.6"/>';
+      if(!thumb)s+=txt(W/2,Hh-9,'b','middle')+txt(10,Hh/2,'a','start')+txt(W/2+8,Hh/2-4,'c','start');
+    }else if(o.t==='circ'){
+      var r=Math.min(W,Hh)/2-3;
+      s+='<circle cx="'+W/2+'" cy="'+Hh/2+'" r="'+r+'" fill="none" stroke="'+ink+'" stroke-width="2.4"/><line x1="'+W/2+'" y1="'+Hh/2+'" x2="'+(W/2+r)+'" y2="'+Hh/2+'" stroke="'+ink+'" stroke-width="1.8"/><circle cx="'+W/2+'" cy="'+Hh/2+'" r="2.5"/>';
+      if(!thumb)s+=txt(W/2+r/2,Hh/2-7,'r','middle');
+    }
+    return s+'</svg>';
+  }
+  function setBox(d,o){var D=dims(o),x=Math.max(0,Math.min(o.x,COLS-D.w));d.style.left=x*CS+'px';d.style.top=o.y*CS+'px';d.style.width=D.w*CS+'px';d.style.height=D.h*CS+'px';}
+  function mkEl(o){
+    var d=document.createElement('div');d.className='gobj'+(o.id===sel?' sel':'');d.dataset.id=o.id;setBox(d,o);
+    d.innerHTML=objSvg(o,CS)+'<button type="button" class="gx" aria-label="Slett figuren" title="Slett">✕</button><span class="gh" title="Dra for å endre størrelsen"></span>';
+    return d;
+  }
+  function drawObjs(){
+    var ov=$p.querySelector('.ovl');if(ov)ov.remove();
+    ov=document.createElement('div');ov.className='ovl';
+    objs.forEach(function(o){ov.appendChild(mkEl(o));});
+    $p.appendChild(ov);
+  }
+  function drawObjsCanvas(g,S,done){
+    var n=objs.length,left=n;if(!n){done();return;}
+    objs.forEach(function(o){
+      var D=dims(o),x=Math.max(0,Math.min(o.x,COLS-D.w)),img=new Image();
+      function f2(){if(--left===0)done();}
+      img.onload=function(){try{g.drawImage(img,x*S,o.y*S,D.w*S,D.h*S);}catch(e){}f2();};
+      img.onerror=f2;
+      img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(objSvg(o,S));
+    });
+  }
+  function refreshSel(){
+    var o=byId(sel),h='';
+    if(o){
+      var T=TY[o.t],V=view(o),vw=VW(o);h='<div class="fl">Valgt: '+T.name+'. Dra i glidebryterne for å gjøre aksene lengre eller kortere.</div><div class="gbox">';
+      if(T.kind!=='fig'){
+        [['x','x-akse'],['y','y-akse']].forEach(function(q){
+          if(q[0]==='y'&&T.kind==='nl')return;
+          var k=q[0],L=V[k+'1']-V[k+'0'],sym=-TY[o.t]['v'+k+'0']===TY[o.t]['v'+k+'1'];
+          h+='<label class="gs"><span class="gl">'+q[1]+'</span><input type="range" data-s="@'+k+'" min="4" max="40" step="'+(sym?2:1)+'" value="'+L+'" aria-label="Lengde på '+q[1]+'"><b>'+nf(V[k+'0'])+' til '+nf(V[k+'1'])+'</b></label>';
+        });
+      }
+      h+='<label class="gs"><span class="gl">Størrelse</span><input type="range" data-s="@u" min="30" max="'+Math.max(30,Math.floor(COLS/vw*100))+'" step="5" value="'+Math.round(o.u*100)+'" aria-label="Størrelse"><b>'+Math.round(o.u*100)+' %</b></label>';
+      h+='</div><div class="gb"><button type="button" class="gdel" data-g="del">Slett figuren</button></div>';
+    }else h='<div class="fl">Trykk på en figur på arket for å flytte den, endre størrelsen eller slette den.</div>';
+    document.querySelectorAll('.gsel').forEach(function(x){x.innerHTML=h;});
+  }
+  function newObj(t){
+    var T=TY[t],vw=T.vx1-T.vx0,u=Math.max(.3,Math.min(1,Math.floor(COLS/vw*20)/20));
+    return {id:++oid,t:t,x:0,y:0,u:u,p:JSON.parse(JSON.stringify(T.p)),v:{x0:T.vx0,x1:T.vx1,y0:T.vy0,y1:T.vy1}};
+  }
+  function addObj(o){
+    snap();var D=dims(o);o.x=Math.max(0,Math.min(o.x,Math.max(0,COLS-D.w)));o.y=Math.max(0,o.y);
+    objs.push(o);sel=o.id;
+    if(objBottom()+2>ROWS)render();else{drawObjs();saveAll();}
+    refreshSel();
+  }
+  function delObj(id){snap();objs=objs.filter(function(o){return o.id!==id;});if(sel===id)sel=null;drawObjs();saveAll();refreshSel();}
+  function fillPal(el){
+    ORDER.forEach(function(t){
+      var o=newObj(t),b=document.createElement('button');b.type='button';b.className='gi';b.dataset.t=t;
+      b.innerHTML='<span class="gt">'+objSvg(o,8,true)+'</span><small>'+TY[t].name+'</small>';
+      b.title=TY[t].name+': dra ut på arket, eller trykk';el.appendChild(b);
+    });
+  }
+  fillPal($pal);
+  function buildGrafTab(k){
+    var w=document.createElement('div');w.className='gtab';
+    w.innerHTML='<div class="fl">Dra en graf ut på arket, eller trykk på den. Trykk på en graf på arket for å endre den.</div><div class="gsel"></div><div class="gpal"></div>';
+    k.appendChild(w);fillPal(w.querySelector('.gpal'));refreshSel();
+  }
+  document.addEventListener('pointerdown',function(e){
+    var b=e.target.closest('.gi');if(!b||e.button>0)return;
+    e.preventDefault();
+    var t=b.dataset.t,sx=e.clientX,sy=e.clientY,ghost=null,moved=false,o=newObj(t),D=dims(o);
+    function mv(ev){
+      if(!moved){
+        if(Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy)<6)return;
+        moved=true;ghost=document.createElement('div');ghost.className='gghost';ghost.innerHTML=objSvg(o,CS);document.body.appendChild(ghost);$pg.classList.add('drag');
+      }
+      ghost.style.left=(ev.clientX-D.w*CS/2)+'px';ghost.style.top=(ev.clientY-D.h*CS/2)+'px';
+    }
+    function end(ev,ok){
+      document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',cx);
+      if(ghost)ghost.remove();$pg.classList.remove('drag');
+      if(!ok)return;
+      if(!moved){o.x=cur.c;o.y=cur.r;addObj(o);return;}
+      var wr=$w.getBoundingClientRect(),pr=$p.getBoundingClientRect();
+      if(ev.clientX<wr.left||ev.clientX>wr.right||ev.clientY<wr.top||ev.clientY>wr.bottom)return;
+      o.x=Math.round((ev.clientX-pr.left)/CS-D.w/2);o.y=Math.round((ev.clientY-pr.top)/CS-D.h/2);addObj(o);
+    }
+    function up(ev){end(ev,true);}
+    function cx(ev){end(ev,false);}
+    document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',cx);
+  });
+  $p.addEventListener('pointerdown',function(e){
+    var d=e.target.closest('.gobj');if(!d||e.target.closest('.gx')||e.button>0)return;
+    var o=byId(+d.dataset.id);if(!o)return;
+    e.preventDefault();
+    sel=o.id;$p.querySelectorAll('.gobj.sel').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');refreshSel();
+    var pgx=document.getElementById('pgraf');if(pgx.hidden&&!$p.classList.contains('drawing'))panel('g');
+    var rz=!!e.target.closest('.gh'),sx=e.clientX,sy=e.clientY,ox=o.x,oy=o.y,D0=dims(o),vw=VW(o),moved=false;
+    try{d.setPointerCapture(e.pointerId);}catch(x){}
+    function mv(ev){
+      var dx=ev.clientX-sx,dy=ev.clientY-sy;
+      if(!moved){if(Math.abs(dx)+Math.abs(dy)<4)return;moved=true;snap();}
+      if(rz){
+        var nu=(D0.w*CS+dx)/(CS*vw);nu=Math.max(.3,Math.min(nu,(COLS-ox)/vw));o.u=Math.round(nu*20)/20;
+        setBox(d,o);d.querySelector('svg').outerHTML=objSvg(o,CS);
+      }else{
+        o.x=Math.max(0,Math.min(ox+dx/CS,COLS-D0.w));o.y=Math.max(0,oy+dy/CS);setBox(d,o);
+      }
+    }
+    function up(){
+      d.removeEventListener('pointermove',mv);d.removeEventListener('pointerup',up);d.removeEventListener('pointercancel',up);
+      if(!moved)return;
+      if(!rz){o.x=Math.round(o.x);o.y=Math.round(o.y);}
+      drawObjs();saveAll();
+      if(objBottom()+2>ROWS)render();
+    }
+    d.addEventListener('pointermove',mv);d.addEventListener('pointerup',up);d.addEventListener('pointercancel',up);
+  });
+  $p.addEventListener('click',function(e){var x=e.target.closest('.gx');if(!x)return;var d=x.closest('.gobj');if(d)delObj(+d.dataset.id);});
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-g]');if(!b)return;var o=byId(sel);if(!o)return;
+    var a=b.dataset.g,T=TY[o.t],D;
+    if(a==='del'){delObj(o.id);return;}
+    snap();
+    if(a.indexOf('p:')===0){
+      var q=a.split(':'),spec=null;T.P.forEach(function(z){if(z[0]===q[1])spec=z;});
+      if(spec)o.p[q[1]]=Math.max(spec[2],Math.min(spec[3],Math.round((o.p[q[1]]+(+q[2])*spec[4])*100)/100));
+    }else{
+      var vw=VW(o),nu=a==='big'?o.u*1.15:o.u/1.15;o.u=Math.round(Math.max(.3,Math.min(nu,COLS/vw))*100)/100;
+      D=dims(o);if(o.x+D.w>COLS)o.x=Math.max(0,COLS-D.w);
+    }
+    if(objBottom()+2>ROWS)render();else{drawObjs();saveAll();}
+    refreshSel();
+  });
+  document.addEventListener('keydown',function(e){
+    if(!sel||e.target.closest&&e.target.closest('input,textarea,#mh,#sbar,.tbt'))return;
+    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();e.stopImmediatePropagation();delObj(sel);}
+    else if(e.key==='Escape'){sel=null;drawObjs();refreshSel();}
+  },true);
+  var snapped=false;
+  document.addEventListener('input',function(e){
+    var r=e.target.closest&&e.target.closest('input[data-s]');if(!r)return;
+    var o=byId(sel);if(!o)return;
+    if(!snapped){snap();snapped=true;}
+    var k=r.dataset.s,T=TY[o.t],v=+r.value,lab=r.parentNode.querySelector('b'),d,box=r.closest('.gbox');
+    if(k==='@u'){o.u=Math.max(.3,Math.min(v/100,COLS/VW(o)));lab.textContent=Math.round(o.u*100)+' %';}
+    else if(k==='@x'||k==='@y'){
+      var ax=k.charAt(1),r0=-T['v'+ax+'0']/(T['v'+ax+'1']-T['v'+ax+'0']),neg=Math.max(1,Math.min(v-1,Math.round(v*r0)));
+      o.v=o.v||view(o);o.v[ax+'0']=-neg;o.v[ax+'1']=v-neg;
+      lab.textContent=nf(o.v[ax+'0'])+' til '+nf(o.v[ax+'1']);
+      if(VW(o)*o.u>COLS)o.u=Math.max(.3,Math.floor(COLS/VW(o)*100)/100);
+      var us=box&&box.querySelector('input[data-s="@u"]');
+      if(us){us.max=Math.max(30,Math.floor(COLS/VW(o)*100));us.value=Math.round(o.u*100);us.parentNode.querySelector('b').textContent=Math.round(o.u*100)+' %';}
+    }
+    d=dims(o);if(o.x+d.w>COLS)o.x=Math.max(0,COLS-d.w);
+    d=$p.querySelector('.gobj[data-id="'+o.id+'"]');
+    if(d){setBox(d,o);d.querySelector('svg').outerHTML=objSvg(o,CS);}
+  });
+  document.addEventListener('change',function(e){
+    if(!(e.target.closest&&e.target.closest('input[data-s]')))return;
+    snapped=false;saveAll();if(objBottom()+2>ROWS)render();
+  });
+  refreshSel();
+  /* ===== slutt grafer ===== */
+
+  var __mhInsert=function(lines){
+    snap();
+    var r=cur.c>0?cur.r+1:cur.r,c=0;
+    lines.forEach(function(line){
+      c=0;
+      line.split(' ').forEach(function(w){
+        if(!w)return;
+        if(c>0&&c+w.length>COLS){r++;c=0;}
+        for(var i=0;i<w.length;i++){if(c>=COLS){r++;c=0;}put(r,c,{c:w[i],s:false});c++;}
+        if(c<COLS)c++;
+      });
+      r++;
+    });
+    cur.r=r+1;cur.c=0;render();
+  };
+
+(function(insertLines){
+var R0=document.getElementById('mh'),$=function(q){return R0.querySelector(q)},fs=1,cu=null;
+var H=[
+['Algebra',[
+['Løse en likning','Brukes når du skal finne hva x er. Målet er å få x alene på én side. Det du gjør på den ene siden, må du gjøre på den andre.',
+['Flytt ledd med x til venstre og vanlige tall til høyre. Når et ledd går over likhetstegnet, bytter det fortegn.','Regn sammen på hver side.','Del begge sider på tallet foran x.','Sjekk svaret: sett det inn i likningen.'],
+'3x + 4 = x + 10',['3x − x = 10 − 4','2x = 6','x = 6 / 2','x = 3','Sjekk: 3 · 3 + 4 = 13 og 3 + 10 = 13. Det stemmer.'],'x = 3',
+'La oss løse likningen tre x pluss fire er lik x pluss ti. Målet er å få x alene. Først flytter vi x fra høyre side over til venstre. Da blir det tre x minus x, som er to x. Så flytter vi fire over til høyre, og da blir det ti minus fire, som er seks. Nå har vi to x er lik seks. Vi deler begge sider på to, og får x er lik tre. Til slutt sjekker vi: begge sidene blir tretten. Da stemmer det.'],
+['Kvadratsetninger','Brukes når du skal gange ut en parentes opphøyd i 2, eller to like parenteser med pluss og minus.',
+['Første: (a + b)² = a² + 2ab + b²','Andre: (a − b)² = a² − 2ab + b²','Tredje: (a + b)(a − b) = a² − b²','Finn ut hva a og b er, og sett dem inn i formelen.'],
+'(x + 3)²',['a = x og b = 3','a² = x²','2ab = 2 · x · 3 = 6x','b² = 9','Sammen: x² + 6x + 9'],'x² + 6x + 9',
+'Vi skal regne ut parentesen x pluss tre, opphøyd i andre. Vi bruker første kvadratsetning. Først finner vi a og b. a er x, og b er tre. Så skriver vi a i andre, og det er x i andre. Deretter to ganger a ganger b, som er seks x. Til slutt b i andre, som er ni. Svaret blir x i andre pluss seks x pluss ni.'],
+['Faktorisere','Brukes når du har x² + bx + c og vil skrive det som to parenteser.',
+['Finn to tall som ganget gir c.','Velg de to av dem som lagt sammen gir b.','Skriv (x + tall 1)(x + tall 2).','Sjekk ved å gange ut parentesene.'],
+'x² + 5x + 6',['Tall som ganget gir 6: 1 og 6, eller 2 og 3','1 + 6 = 7 passer ikke','2 + 3 = 5 passer','(x + 2)(x + 3)'],'(x + 2)(x + 3)',
+'Vi skal faktorisere x i andre pluss fem x pluss seks. Vi leter etter to tall som ganget sammen blir seks, og lagt sammen blir fem. En og seks gir sju når vi legger dem sammen, så det er feil. To og tre gir fem, og to ganger tre er seks. Det passer! Svaret er parentes x pluss to, parentes x pluss tre.']
+]],
+['Funksjoner',[
+['Rett linje: y = ax + b','Brukes når grafen er en rett linje. a sier hvor bratt linjen er. b sier hvor den krysser y-aksen.',
+['b er startverdien. Linjen krysser y-aksen i (0, b).','a er stigningstallet: hvor mye y endrer seg når x øker med 1.','Lag en tabell med noen x-verdier og regn ut y.','Sett punktene i koordinatsystemet og tegn en rett linje gjennom dem.'],
+'y = 2x + 1',['x = 0 gir y = 2 · 0 + 1 = 1','x = 1 gir y = 2 · 1 + 1 = 3','x = 2 gir y = 2 · 2 + 1 = 5','Linjen går gjennom (0, 1), (1, 3) og (2, 5)'],'a = 2 og b = 1',
+'Vi ser på funksjonen y er lik to x pluss en. Tallet etter x er en, og det er der linjen krysser y-aksen. Tallet foran x er to, og det kalles stigningstallet. Det betyr at når x går opp med en, går y opp med to. Vi lager en tabell. Når x er null, er y en. Når x er en, er y tre. Når x er to, er y fem. Sett prikker på disse punktene og tegn en rett linje gjennom dem.'],
+['Funksjon gjennom to punkt','Brukes når du kjenner to punkt på linjen og skal finne funksjonsuttrykket.',
+['Finn stigningstallet: a = endring i y delt på endring i x.','Sett ett av punktene inn i y = ax + b og finn b.','Skriv funksjonen.'],
+'Punktene (1, 3) og (3, 7)',['a = (7 − 3) / (3 − 1) = 4 / 2 = 2','3 = 2 · 1 + b, så b = 1','y = 2x + 1'],'y = 2x + 1',
+'Vi har to punkt: en komma tre, og tre komma sju. Først finner vi stigningstallet. Endringen i y er sju minus tre, som er fire. Endringen i x er tre minus en, som er to. Fire delt på to er to, så a er to. Så setter vi punktet en komma tre inn i y er lik a x pluss b. Tre er lik to ganger en pluss b, så b er en. Funksjonen er y er lik to x pluss en.']
+]],
+['Geometri',[
+['Areal og omkrets','Areal er hvor stor flaten er. Omkrets er lengden rundt figuren.',
+['Rektangel: areal = lengde · bredde. Omkrets = 2 · lengde + 2 · bredde.','Trekant: areal = grunnlinje · høyde / 2.','Skriv enhet: cm for lengde, cm² for areal.'],
+'Rektangel på 8 cm og 5 cm',['Areal = 8 · 5 = 40 cm²','Omkrets = 2 · 8 + 2 · 5 = 16 + 10 = 26 cm'],'Areal 40 cm² og omkrets 26 cm',
+'Vi har et rektangel som er åtte centimeter langt og fem centimeter bredt. Arealet er lengde ganger bredde, åtte ganger fem, som er førti kvadratcentimeter. Omkretsen er lengden rundt. Vi tar to ganger åtte pluss to ganger fem. Det er seksten pluss ti, altså tjueseks centimeter. Husk enhetene: kvadratcentimeter for areal og centimeter for omkrets.'],
+['Sirkel','Brukes når du skal finne omkrets eller areal av en sirkel.',
+['Radius r er halve diameteren.','Omkrets = 2 · π · r','Areal = π · r · r','Bruk π-tasten, eller 3,14.'],
+'Radius 3 cm',['Omkrets = 2 · 3,14 · 3 = 18,84 cm','Areal = 3,14 · 3 · 3 = 28,26 cm²'],'Omkrets 18,84 cm og areal 28,26 cm²',
+'En sirkel har radius tre centimeter. Omkretsen er to ganger pi ganger radius. Det blir to ganger tre komma fjorten ganger tre, som er atten komma åttifire centimeter. Arealet er pi ganger radius ganger radius. Det blir tre komma fjorten ganger tre ganger tre, som er tjueåtte komma tjueseks kvadratcentimeter.'],
+['Pytagoras','Brukes i rettvinklede trekanter. Hypotenusen c er den lengste siden, og ligger rett overfor den rette vinkelen.',
+['Skriv formelen: a² + b² = c²','Sett inn de to sidene du kjenner.','Regn ut. Til slutt tar du kvadratroten.'],
+'a = 3 og b = 4. Finn c.',['3² + 4² = c²','9 + 16 = c²','c² = 25','c = √25 = 5'],'c = 5',
+'Vi har en rettvinklet trekant der de to korte sidene er tre og fire. Vi skal finne den lengste siden, c. Pytagoras sier at a i andre pluss b i andre er lik c i andre. Tre i andre er ni, og fire i andre er seksten. Ni pluss seksten er tjuefem. Så c i andre er tjuefem. Til slutt tar vi kvadratroten av tjuefem, og c er fem.']
+]],
+['Prosent',[
+['Prosent av et tall','Brukes når du skal finne en del av noe, for eksempel 15 % av en pris.',
+['Gjør prosenten om til et desimaltall: del på 100.','Gang desimaltallet med tallet.'],
+'15 % av 200 kr',['15 / 100 = 0,15','0,15 · 200 = 30'],'30 kr',
+'Hva er femten prosent av to hundre kroner? Først gjør vi prosenten om til et desimaltall ved å dele på hundre. Femten delt på hundre er null komma femten. Så ganger vi med to hundre. Null komma femten ganger to hundre er tretti. Svaret er tretti kroner.'],
+['Vekstfaktor, rabatt og rente','Brukes ved økning og nedgang i prosent, for eksempel rabatt, prisøkning og sparing.',
+['Økning: vekstfaktor = 1 + prosent / 100.','Nedgang: vekstfaktor = 1 − prosent / 100.','Ny verdi = gammel verdi · vekstfaktor.','Rente på rente: gang med vekstfaktoren like mange ganger som antall år.'],
+'Jakke på 800 kr med 25 % rabatt',['Vekstfaktor = 1 − 25 / 100 = 0,75','Ny pris = 800 · 0,75 = 600'],'600 kr',
+'En jakke koster åtte hundre kroner, og har tjuefem prosent rabatt. Når prisen går ned, bruker vi en minus prosenten delt på hundre. En minus null komma tjuefem er null komma sytti fem. Dette tallet kalles vekstfaktoren. Så ganger vi prisen med vekstfaktoren. Åtte hundre ganger null komma sytti fem er seks hundre. Den nye prisen er seks hundre kroner.']
+]],
+['Statistikk',[
+['Gjennomsnitt, median og typetall','Brukes når du skal beskrive en rekke med tall.',
+['Gjennomsnitt: legg sammen alle tallene og del på hvor mange tall det er.','Median: sorter tallene fra minst til størst. Tallet i midten er medianen. Er det to i midten, ta snittet av dem.','Typetall: tallet som kommer flest ganger.','Variasjonsbredde: største tall minus minste tall.'],
+'Tallene 2, 5, 5, 8, 10',['Sum = 30, og 30 / 5 = 6 (gjennomsnitt)','Median = 5','Typetall = 5','Variasjonsbredde = 10 − 2 = 8'],'Snitt 6, median 5, typetall 5',
+'Vi har tallene to, fem, fem, åtte og ti. Gjennomsnittet finner vi ved å legge sammen alle tallene. Det blir tretti. Så deler vi på hvor mange tall det er, altså fem. Tretti delt på fem er seks. Medianen er tallet i midten når tallene står i rekkefølge, og det er fem. Typetallet er tallet som kommer flest ganger, og det er også fem. Variasjonsbredden er største tall minus minste tall. Ti minus to er åtte.'],
+['Sannsynlighet','Brukes når du skal finne hvor stor sjansen er for at noe skjer.',
+['Tell gunstige utfall: de du ønsker.','Tell mulige utfall: alle som kan skje.','Sannsynlighet = gunstige / mulige.','Gang med 100 for å få prosent.'],
+'Terning: sjansen for 5 eller 6',['Gunstige: 2 (5 og 6)','Mulige: 6','2 / 6 = 1/3 ≈ 0,33 = 33 %'],'Ca. 33 %',
+'Hva er sjansen for å få fem eller seks med en terning? Først teller vi gunstige utfall, altså de vi vil ha. Det er to: fem og seks. Så teller vi mulige utfall. En terning har seks sider. Sannsynligheten er gunstige delt på mulige, to delt på seks, som er en tredjedel. Det er omtrent null komma tre tre, eller trettitre prosent.']
+]]
+];
+function e(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function li(a){return a.map(function(x){return '<li>'+e(x)+'</li>'}).join('');}
+$('#mlist').innerHTML=H.map(function(g,gi){return '<details class="mt"><summary>'+g[0]+'</summary><div class="mtb">'+g[1].map(function(t,ti){
+ return '<div class="tp"><details class="stp"><summary>'+e(t[0])+'</summary><p class="hint">'+e(t[1])+'</p><p><b>Slik gjør du:</b></p><ol>'+li(t[2])+'</ol><div class="res"><p><b>Eksempel:</b></p><div class="pre">'+e(t[3])+'</div><ol>'+li(t[4])+'</ol><div class="ans">Svar: '+e(t[5])+'</div><div class="mrow"><button type="button" data-w="'+gi+'-'+ti+'">Skriv eksempelet på rutepapiret</button></div></div></details><div class="spc"><button type="button" class="spk" data-g="'+gi+'" data-t="'+ti+'" aria-pressed="false">▶ Les opp</button><button type="button" class="spd">Fart: Normal</button></div></div>';
+}).join('')+'</div></details>';}).join('');
+var tops=[].slice.call(R0.querySelectorAll('details.mt'));
+tops.forEach(function(d){d.addEventListener('toggle',function(){if(!d.open||srch)return;tops.forEach(function(o){if(o!==d)o.open=false;});});});
+tops[0].open=true;
+function reset(){R0.querySelectorAll('.spk').forEach(function(b){b.textContent='▶ Les opp';b.setAttribute('aria-pressed','false');});}
+function stop(){cu=null;clearTimeout(tmr);try{speechSynthesis.cancel();}catch(x){}reset();$('#mnow').hidden=true;}
+$('#mlist').addEventListener('click',function(ev){
+ var b=ev.target.closest('button');if(!b)return;
+ if(b.classList.contains('spk')){
+  var was=b.getAttribute('aria-pressed')==='true';stop();if(was)return;
+  say(H[+b.dataset.g][1][+b.dataset.t][6],b);
+ }else if(b.dataset.w){var q=b.dataset.w.split('-'),t=H[+q[0]][1][+q[1]];insertLines([t[3]].concat(t[4],['Svar: '+t[5]]));mat(false);}
+});
+var tk=0,tmr=0,SAVED={};
+try{SAVED=JSON.parse(localStorage.getItem('mh-v')||'{}')||{};}catch(x){}
+var SP=[['Sakte',.75],['Normal',.9],['Fort',1.05]],si=(SAVED.si===0||SAVED.si===1||SAVED.si===2)?SAVED.si:1;
+function vlist(){return (window.speechSynthesis?speechSynthesis.getVoices():[]).filter(function(v){return /^(nb|nn|no)([-_]|$)/i.test(v.lang);});}
+function score(v){var n=v.name.toLowerCase(),c=0;if(/natural|neural|online/.test(n))c+=60;if(/premium|enhanced|forbedret|siri/.test(n))c+=45;if(/google/.test(n))c+=25;if(!v.localService)c+=10;if(/compact|espeak|eloquence/.test(n))c-=40;if(/^nb/i.test(v.lang))c+=3;return c;}
+function pickV(){var l=vlist(),sel='';if(sel){var m=l.filter(function(v){return v.name===sel;})[0];if(m)return m;}l.sort(function(a,b){return score(b)-score(a);});return l[0]||null;}
+function RATE(){return SP[si][1];}
+function fillV(){}
+function saveV(){try{localStorage.setItem('mh-v',JSON.stringify({si:si}));}catch(x){}}
+function spoken(t){return t.replace(/\bx\b/gi,'eks').replace(/\by\b/g,'yy').replace(/\bb\b/g,'be').replace(/\bc\b/g,'se').replace(/\s+/g,' ');}
+function say(text,btn){
+  if(!window.speechSynthesis){$('#mnowt').textContent='Opplesing finnes ikke i denne nettleseren.';$('#mnow').hidden=false;return;}
+  var parts=(text.match(/[^.!?]+[.!?]*/g)||[text]).map(function(x){return x.trim();}).filter(Boolean),my=++tk,i=0,v=pickV();
+  cu=my;btn.textContent='■ Stopp';btn.setAttribute('aria-pressed','true');
+  function next(){
+    if(cu!==my)return;
+    if(i>=parts.length){cu=null;reset();$('#mnow').hidden=true;return;}
+    var s=parts[i++],u=new SpeechSynthesisUtterance(spoken(s));
+    u.lang=v?v.lang:'nb-NO';if(v)u.voice=v;u.rate=RATE();u.pitch=1;
+    $('#mnowt').textContent=s;$('#mnow').hidden=false;
+    u.onend=function(){tmr=setTimeout(next,/[:]$/.test(s)?220:/[.!?]$/.test(s)?450:260);};
+    u.onerror=function(ev){if(ev&&(ev.error==='interrupted'||ev.error==='canceled'))return;tmr=setTimeout(next,100);};
+    speechSynthesis.speak(u);
+  }
+  try{speechSynthesis.cancel();}catch(x){}
+  tmr=setTimeout(next,80);
+}
+function spdLbl(){R0.querySelectorAll('.spd').forEach(function(x){x.textContent='Fart: '+SP[si][0];});}
+$('#mlist').addEventListener('click',function(ev){var b=ev.target.closest('.spd');if(!b)return;si=(si+1)%3;spdLbl();saveV();});
+spdLbl();
+$('#mstop').onclick=stop;
+fillV();if(window.speechSynthesis)speechSynthesis.onvoiceschanged=fillV;
+var srch=false,tps=[].slice.call(R0.querySelectorAll('.tp')),flat=[];
+var EX=['ligning ligninger ukjent parentes formel','graf stigning linje koordinat','figur trekant rektangel lengde volum','rabatt tilbud rente vekst desimal','snitt sjanse terning tall'];
+H.forEach(function(g,gi){g[1].forEach(function(t){flat.push((g[0]+' '+EX[gi]+' '+t.slice(0,6).join(' ')).toLowerCase());});});
+var TIPS=[
+['Brøk','På Tall-fanen trykker du «Brøk», skriver teller og nevner og trykker «Sett inn». Du kan også velge vanlige brøker som 1/2.','brøk teller nevner halv fjerdedel','f','Åpne brøkpanelet'],
+['Kalkulator','På Tall-fanen finner du «Kalkulator». «Sett inn» skriver hele regnestykket på arket, pent stilt opp i kolonner.','kalkulator regne regnestykke pluss minus gange dele','k','Åpne kalkulatoren'],
+['Opphøyd i og potens','Trykk «Opphøyd i 2» eller «Opphøyd i 3», eller slå på «Potens» for å skrive hevet tall. Slå den av igjen når du er ferdig.','potens kvadrat opphøyd hevet eksponent x2 x3'],
+['Symboler og kvadratrot','Fanen «Symboler» har kvadratrot, π, ≤, ≥, ≠, ± og flere tegn.','symboler kvadratrot rot pi mindre større ulik grader vinkel'],
+['Bokstaver og stor bokstav','Fanen «abc» har bokstaver. Trykk ⇧ for stor bokstav på neste bokstav.','bokstav abc tekst skrive store bokstaver'],
+['Likninger-fanen','Fanen «Likninger» har tastene «Begge sider», «Kopier linja ned», «x =» og fagord under hver tast.','likning ligning begge sider kopier linja x ukjent'],
+['Angre','Trykk «Angre» til høyre, eller Ctrl+Z, for å fjerne siste endring.','angre feil ombestemme tilbake ctrl z'],
+['Tøm arket','Knappen «Tøm arket» spør først om du er sikker. Du kan trykke «Angre» rett etter.','tøm slett nullstille begynne på nytt viske ut'],
+['Tegne på arket','Trykk «Tegn» til høyre. Velg penn eller viskelær, farge og tykkelse, og tegn rett på arket. Trykk ✕ for å skrive igjen. «Angre» tar bort siste strek.','tegne tegning penn viskelær male strek skisse'],
+['Tekstboks','Trykk «Tegn», velg «Tekst» og trykk på arket. Skriv teksten. Bruk ✥ for å flytte boksen og ✕ for å slette den. Farge og tekststørrelse velger du i panelet.','tekst tekstboks skrive notat boks label'],
+['Gjøre aksene lengre','Trykk på grafen på arket. Da kommer glidebrytere for x-aksen og y-aksen i Grafer-panelet.','akse lengde x y koordinatsystem graf lengre kortere'],
+['Rutenett av og på','Knappen «Rutenett» ved siden av «Tøm arket» skrur rutene av og på. Det gjelder også når du lagrer bilde.','rutenett ruter linjer skru av på skjule vise'],
+['Lagre arket som bilde','Trykk «Lagre bilde» for å få arket som en bildefil.','lagre bilde last ned png skjermbilde'],
+['Farger og fargehjul','Trykk «Farger» for mørk eller lys, ferdige farger og fargehjul.','farger fargehjul tema mørk lys utseende','c','Åpne farger'],
+['Størrelse på rutene','Knappen «Ruter» gjør rutene mindre eller større. Små ruter gir plass til mer.','ruter rutenett størrelse plass zoom større mindre'],
+['Størrelse på tastaturet','Dra eller trykk på den brede streken over tastaturet for å gjøre det høyere, lavere eller skjule det.','tastatur taster høyde skjule håndtak dra'],
+['Tekststørrelse i hjelpen','Bruk A− og A+ øverst i håndboken for mindre eller større tekst.','tekst skrift størrelse lesbar'],
+['Les opp','Trykk «▶ Les opp» ved siden av et emne for å høre en forklaring.','les opp stemme lyd høre']
+];
+function find(){
+  var q=$('#msq').value.toLowerCase().trim(),w=q.split(/\s+/).filter(Boolean),n=0;
+  srch=w.length>0;
+  tps.forEach(function(el,i){var ok=w.every(function(x){return flat[i].indexOf(x)>-1;});el.hidden=!ok;if(ok)n++;});
+  tps.forEach(function(el){var d=el.querySelector('details');if(d)d.open=srch&&n<=2&&!el.hidden;});
+  tops.forEach(function(d,i){var v=!!d.querySelector('.tp:not([hidden])');d.hidden=!v;if(srch){if(v)d.open=true;}else d.open=(i===0);});
+  var tl=srch?TIPS.filter(function(t){var h=(t[0]+' '+t[1]+' '+t[2]).toLowerCase();return w.every(function(x){return h.indexOf(x)>-1;});}):[];
+  $('#mtips').innerHTML=!srch?'':(tl.length?'<p class="hint"><b>Hjelp til appen</b></p>'+tl.map(function(t){return '<div class="res"><p><b>'+e(t[0])+'</b></p><p>'+e(t[1])+'</p>'+(t[3]?'<div class="mrow"><button type="button" data-go="'+t[3]+'">'+e(t[4])+'</button></div>':'')+'</div>';}).join(''):'')+((n+tl.length)?'':'<p class="hint">Fant ingenting for «'+e(q)+'». Prøv et annet ord, for eksempel prosent, areal, brøk eller farger.</p>');
+}
+$('#msq').addEventListener('input',find);
+$('#msx').onclick=function(){$('#msq').value='';find();$('#msq').focus();};
+$('#mtips').addEventListener('click',function(ev){
+  var b=ev.target.closest('button[data-go]');if(!b)return;var g=b.dataset.go;mat(false);
+  if(g==='f'){if($pf.hidden)panel('f');}else if(g==='k'){toggleCalc(true);}else if(g==='c'){if($pc.hidden)$tc.click();}
+});
+function save(){try{localStorage.setItem('mh',JSON.stringify({fs:fs}));}catch(x){}}
+function setFs(){R0.style.setProperty('--mfs',fs);}
+$('#fm').onclick=function(){fs=Math.max(.8,Math.round((fs-.1)*10)/10);setFs();save();};
+$('#fp').onclick=function(){fs=Math.min(1.6,Math.round((fs+.1)*10)/10);setFs();save();};
+try{var sv=JSON.parse(localStorage.getItem('mh')||'null');if(sv&&sv.fs)fs=sv.fs;}catch(x){}
+setFs();
+var tm=document.getElementById('tmat');
+function mat(open){if(!open)stop();R0.hidden=!open;document.getElementById('kb').style.display=open?'none':'';document.querySelector('.mid').style.display=open?'none':'';document.getElementById('sbar').style.display=open?'none':'';tm.setAttribute('aria-pressed',open?'true':'false');}
+tm.addEventListener('click',function(){mat(R0.hidden);});
+document.getElementById('mback').addEventListener('click',function(){mat(false);});
+})(__mhInsert);
+
+  try{
+    var sv1=JSON.parse(localStorage.getItem('rp-sheets')||'null');
+    if(sv1&&sv1.sheets&&sv1.sheets.length){
+      sheets=sv1.sheets.map(function(s){return {name:s.name||'Ark',rows:s.rows||[],cur:s.cur||{r:0,c:0},hist:[],objs:s.objs||[],inks:s.inks||[],texts:s.texts||[]};});
+      curSheet=Math.min(Math.max(0,sv1.act|0),sheets.length-1);
+    }else{
+      var sv0=JSON.parse(localStorage.getItem('rp-sheet')||'null');
+      if(sv0&&sv0.rows){sheets[0].rows=sv0.rows;if(sv0.cur)sheets[0].cur=sv0.cur;}
+    }
+    rows=sheets[curSheet].rows;cur=sheets[curSheet].cur;hist=sheets[curSheet].hist;objs=sheets[curSheet].objs||(sheets[curSheet].objs=[]);inks=sheets[curSheet].inks||(sheets[curSheet].inks=[]);texts=sheets[curSheet].texts||(sheets[curSheet].texts=[]);
+  }catch(e){}
+  layout();tabs();keys();render();drawSheets();
+
+  document.getElementById('stabs').addEventListener('click',function(e){var b=e.target.closest('.stab');if(!b)return;var i=+b.dataset.i;if(i===curSheet)return;renaming=false;delSure=0;gotoSheet(i);});
+  document.getElementById('stabs').addEventListener('dblclick',function(e){var b=e.target.closest('.stab');if(!b||+b.dataset.i!==curSheet)return;renaming=true;drawSheets();});
+  document.getElementById('sadd').addEventListener('click',function(){
+    if(sheets.length>=20)return;
+    keep();var n=1;while(sheets.some(function(s){return s.name==='Ark '+n;}))n++;
+    sheets.push({name:'Ark '+n,rows:[],cur:{r:0,c:0},hist:[],objs:[],inks:[],texts:[]});delSure=0;gotoSheet(sheets.length-1);
+  });
+  document.getElementById('sren').addEventListener('click',function(){renaming=true;drawSheets();});
+  document.getElementById('sdel').addEventListener('click',function(){
+    if(sheets.length<2)return;
+    if(!delSure){delSure=1;clearTimeout(delT);delT=setTimeout(function(){delSure=0;drawSheets();},3000);drawSheets();return;}
+    clearTimeout(delT);delSure=0;sheets.splice(curSheet,1);load(Math.min(curSheet,sheets.length-1));
+  });
+})();
+
+/* ===== Oppdatering fra GitHub ===== */
+(function(){
+  var APP_VERSION='1.0.0';
+  var REPO='seanwls0123/MatteHjelpernn';
+  var $v=document.getElementById('uver'),$c=document.getElementById('ucheck'),$s=document.getElementById('ustat'),$d=document.getElementById('udl');
+  if(!$c)return;
+  var dlUrl='';
+  $v.textContent='Versjon '+APP_VERSION;
+  function parse(v){return String(v).replace(/^[^0-9]*/,'').split('.').map(function(x){return parseInt(x,10)||0;});}
+  function newer(a,b){var x=parse(a),y=parse(b);for(var i=0;i<Math.max(x.length,y.length);i++){var p=x[i]||0,q=y[i]||0;if(p>q)return true;if(p<q)return false;}return false;}
+  $c.addEventListener('click',function(){
+    $d.hidden=true;$s.textContent='Sjekker...';$c.disabled=true;
+    fetch('https://api.github.com/repos/'+REPO+'/releases/latest',{headers:{'Accept':'application/vnd.github+json'}})
+    .then(function(r){
+      if(r.status===404)throw new Error('none');
+      if(!r.ok)throw new Error('http');
+      return r.json();
+    })
+    .then(function(rel){
+      var tag=rel.tag_name||'';
+      if(newer(tag,APP_VERSION)){
+        dlUrl=rel.html_url||('https://github.com/'+REPO+'/releases');
+        var a=(rel.assets||[]).filter(function(x){return /\.exe$/i.test(x.name);})[0];
+        if(a)dlUrl=a.browser_download_url;
+        $s.textContent='Ny versjon finnes: '+tag.replace(/^v/i,'');
+        $d.hidden=false;
+      }else{
+        $s.textContent='Du har siste versjon.';
+      }
+    })
+    .catch(function(e){
+      $s.textContent=(e&&e.message==='none')?'Fant ingen utgivelser på GitHub ennå.':'Klarte ikke å sjekke. Er du på nett?';
+    })
+    .then(function(){$c.disabled=false;});
+  });
+  $d.addEventListener('click',function(){
+    if(!dlUrl)return;
+    var a=document.createElement('a');a.href=dlUrl;a.target='_blank';a.rel='noopener';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    $s.textContent='Lukk MatteHjelpern, og erstatt den gamle MatteHjelpern.exe med den nye du lastet ned.';
+  });
+})();
+</script>
+</body>
+</html>
