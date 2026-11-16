@@ -770,7 +770,7 @@ button:active{transform:translateY(1px) scale(.98);box-shadow:none!important}
   $tc.addEventListener('click',function(){panel('c');wheelMark();});
   [$pc,$pf,document.getElementById('pgraf'),document.getElementById('pdraw')].forEach(function(p){p.addEventListener('click',function(e){if(e.target.closest('[data-p="CLOSE"]'))panel('');});});
 
-  var COLORS=[['Grønn','#3fae7a'],['Lime','#8ab61a'],['Mint','#35c9a0'],['Turkis','#14b8c4'],['Himmelblå','#38a3e8'],['Blå','#2f6fd6'],['Marineblå','#3b4fb5'],['Indigo','#5b5bd6'],['Lilla','#8e5bd6'],['Fiolett','#b24fd6'],['Rosa','#e05fb0'],['Lys rød','#e0476f'],['Rød','#d9433b'],['Korall','#f2735a'],['Oransje','#f08a24'],['Gul','#e8b923'],['Sennep','#c9a227'],['Oliven','#8a9a2b'],['Brun','#a0693b'],['Rust','#b5532e'],['Vin','#9c2f4f'],['Skifer','#5f7d95'],['Stål','#7a8a99'],['Grafitt','#6b7280'],['Sand','#b8a07a']];
+  var COLORS=[['Grønn','#3fae7a'],['Lime','#8ab61a'],['Mint','#35c9a0'],['Turkis','#14b8c4'],['Himmelblå','#38a3e8'],['Blå','#2f6fd6'],['Marineblå','#3b4fb5'],['Indigo','#5b5bd6'],['Lilla','#8e5bd6'],['Fiolett','#b24fd6'],['Rosa','#e05fb0'],['Lys rød','#e0476f'],['Rød','#d9433b'],['Korall','#f2735a'],['Oransje','#f08a24'],['Gul','#e8b923'],['Sennep','#c9a227'],['Oliven','#8a9a2b'],['Brun','#a0693b'],['Rust','#b5532e'],['Vin','#9c2f4f'],['Skifer','#5f7d95'],['Stål','#7a8a99'],['Grafitt','#6b7280'],['Sand','#b8a07a'],['Cyan','#00FFFF']];
   var tm={i:0,l:false,h:null,s:50},sw=document.getElementById('sw'),tmode=document.getElementById('tmode');
   try{var sv=JSON.parse(localStorage.getItem('rp-theme')||'null');if(sv&&COLORS[sv.i]){tm.i=sv.i;tm.l=!!sv.l;if(sv.h!=null&&sv.s!=null){tm.h=sv.h;tm.s=sv.s;}}}catch(e){}
   function hslOf(x){
@@ -1498,8 +1498,8 @@ document.getElementById('mback').addEventListener('click',function(){mat(false);
 
 /* ===== Oppdatering fra GitHub ===== */
 (function(){
-  var APP_VERSION='1.0.1';
-  var REPO='seanwls0123/MatteHjelpernn';
+  var APP_VERSION='1.0.0';
+  var REPO='seanwls0123/MatteHjelpern';
   var $v=document.getElementById('uver'),$c=document.getElementById('ucheck'),$s=document.getElementById('ustat'),$d=document.getElementById('udl');
   if(!$c)return;
   var dlUrl='';
